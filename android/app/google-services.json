@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "27415893042",
+    "project_id": "upliftcapstone",
+    "storage_bucket": "upliftcapstone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27415893042:android:8dba84493e24e3c19fd82b",
+        "android_client_info": {
+          "package_name": "com.example.capstone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzSRaM_tU6b5aLjD8stTlUpjiPfAferOE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
