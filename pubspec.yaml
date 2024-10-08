@@ -39,6 +39,9 @@ dependencies:
   firebase_core: ^3.5.0
   google_fonts: ^6.2.1
   cloud_firestore: ^5.4.2
+  google_nav_bar: ^5.0.6
+  ionicons: ^0.2.2
+  youtube_player_flutter: ^9.1.1
 
 dev_dependencies:
   flutter_test:
@@ -63,8 +66,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/Stroke-feature-image.jpg
+    - assets/images/background.png
+    - assets/images/uplift_logo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

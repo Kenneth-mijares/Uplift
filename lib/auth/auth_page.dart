@@ -1,5 +1,5 @@
-import 'package:capstone/pages/login_page.dart';
-import 'package:capstone/pages/register_page.dart';
+import 'package:capstone/pages/a%20logggin/login_page.dart';
+import 'package:capstone/pages/a%20logggin/register_page.dart';
 
 import 'package:flutter/material.dart';
 
