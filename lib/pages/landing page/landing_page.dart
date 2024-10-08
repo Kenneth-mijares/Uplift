@@ -1,6 +1,6 @@
 
 
-import 'package:capstone/pages/landing%20page/widgets/buttons/button%201/big_Button.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/big_Button.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatelessWidget {
