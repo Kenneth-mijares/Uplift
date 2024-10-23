@@ -7,6 +7,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Settings'),
         actions: [
@@ -17,24 +18,45 @@ class SettingsPage extends StatelessWidget {
               child: (const Icon(Icons.logout)))
         ],
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Welcome to the Settings Page!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+            const CircleAvatar(
+              radius: 60,
+              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const Text(
+              'John Doe',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
             Text(
-              'PLease edit this one out',
+              'Flutter Developer',
+              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'A passionate Flutter developer with experience in building beautiful and functional apps.',
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Follow'),
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Message'),
+                ),
+              ],
+            ),
           ],
         ),
       ),

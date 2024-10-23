@@ -6,31 +6,124 @@ class ReportsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Reports'),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome to the Reports Page!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Blue box with text
+          Expanded(
+            flex: 2,
+            child: Container(
+              color: Colors.blue,
+              padding: const EdgeInsets.all(16.0),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '100',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Completed Exercises',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Oct 23, 2024',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        'Latest Exercise Date',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 20),
-            Text(
-              'PLease edit this one out',
-              style: TextStyle(fontSize: 16),
+          ),
+
+          // Expanded section with tabs
+          Expanded(
+            flex: 4,
+            child: DefaultTabController(
+              length: 2, // Number of tabs
+              child: Column(
+                children: [
+                  // TabBar
+                  const TabBar(
+                    tabs: [
+                      Tab(text: 'Tab 1'),
+                      Tab(text: 'Tab 2'),
+                    ],
+                    labelColor: Colors.blue,
+                    unselectedLabelColor: Colors.grey,
+                    indicatorColor: Colors.blue,
+                  ),
+                  // TabBarView
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        // Content for Tab 1
+                        Container(
+                
+                          padding: const EdgeInsets.all(16.0),
+                          child: const Center(
+                            child: Text(
+                              'Content for Tab 1',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Content for Tab 2
+                        Container(
+             
+                          padding: const EdgeInsets.all(16.0),
+                          child: const Center(
+                            child: Text(
+                              'Content for Tab 2',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
-          ],
-        ),
+          ),
+        ],
       ),
- 
     );
   }
 }
