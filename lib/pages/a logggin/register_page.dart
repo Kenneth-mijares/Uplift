@@ -1,5 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -38,23 +37,11 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _passwordController.text.trim(),
       );
       // Add user details
-
-      addUserDetails(
-        _emailController.text.trim()
-      );
   
     }
   
   }
-  Future addUserDetails(
-      String email)async{
-    await FirebaseFirestore.instance.collection('users').add({
-        'first name': '',
-        'last name': '',
-        'email': email,
-        'gender': '',
-      });
-    }
+
   bool passwordConfirmed() {
     if (_passwordController.text.trim() ==
         _confirmpasswordController.text.trim()) {
