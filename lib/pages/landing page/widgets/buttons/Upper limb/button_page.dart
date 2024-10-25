@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/front_arm_raise.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/front_arm_raise.dart';
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/side_arm_raises.dart';
 import 'package:google_fonts/google_fonts.dart';
 

@@ -59,12 +59,12 @@ class LandingPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              const BigButton(), // TODO: edit this one out eg replace
+              const BigButton(), // TODO: edit this one out eg replace, make it so that it reflects the needs of the user based on pre assessment
 
               const SizedBox(height: 20),
 
               // AVAILABLE EXERCISES
-              
+
               Text(
                 'Available Exercises',
                    style: GoogleFonts.kanit(
