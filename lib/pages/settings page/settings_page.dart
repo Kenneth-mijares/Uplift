@@ -29,34 +29,23 @@ class SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              'John Doe',
+              'Hello User!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
-            Text(
-              'Flutter Developer',
-              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-            ),
+           
             const SizedBox(height: 20),
             const Text(
-              'A passionate Flutter developer with experience in building beautiful and functional apps.',
+              'To personalize experience, we recommend to add some details about you. ',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Follow'),
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Message'),
-                ),
-              ],
+
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text('Start now?'),
             ),
+       
           ],
         ),
       ),
