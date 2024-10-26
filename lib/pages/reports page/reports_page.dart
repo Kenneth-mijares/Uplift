@@ -9,6 +9,7 @@ class ReportsPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Reports'),
+        backgroundColor: const Color.fromARGB(255, 111, 128, 222),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -17,7 +18,7 @@ class ReportsPage extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Container(
-              color: Colors.blue,
+              color: const Color.fromARGB(255, 111, 128, 222),
               padding: const EdgeInsets.all(16.0),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,9 +80,9 @@ class ReportsPage extends StatelessWidget {
                       Tab(text: 'Tab 1'),
                       Tab(text: 'Tab 2'),
                     ],
-                    labelColor: Colors.blue,
+                    labelColor: Color.fromARGB(255, 111, 128, 222),
                     unselectedLabelColor: Colors.grey,
-                    indicatorColor: Colors.blue,
+                    indicatorColor: Color.fromARGB(255, 111, 128, 222),
                   ),
                   // TabBarView
                   Expanded(

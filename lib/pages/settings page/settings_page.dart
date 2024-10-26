@@ -43,6 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Settings'),
+        backgroundColor: const Color.fromARGB(255, 111, 128, 222),
         actions: [
           GestureDetector(
             onTap: () {

@@ -115,7 +115,10 @@ Future<void> _getUserLocation() async {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text('Map Coordinates')),
+      appBar: AppBar(
+        title: const Text('Map Coordinates'),
+        backgroundColor:  const Color.fromARGB(255, 111, 128, 222),
+      ),
       body: Column(
         children: [
           Expanded(
