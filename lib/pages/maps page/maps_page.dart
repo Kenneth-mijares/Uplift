@@ -26,42 +26,37 @@ class _MapsPageState extends State<MapsPage> {
     _getUserLocation();
   }
 
-Future<void> _getUserLocation() async {
-  bool serviceEnabled;
-  LocationPermission permission;
+  Future<void> _getUserLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  // Check if location services are enabled
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    return;
-  }
-
-  // Check permission status
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-    permission = await Geolocator.requestPermission();
-    if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
       return;
     }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+        return;
+      }
+    }
+
+    LocationSettings locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+
+    Position position = await Geolocator.getCurrentPosition(
+      locationSettings: locationSettings,
+    );
+
+    setState(() {
+      _userLocation = position;
+      _nearestCoordinate = _findNearestCoordinate();
+    });
   }
-
-  // Use LocationSettings instead of deprecated 'desiredAccuracy'
-  LocationSettings locationSettings = const LocationSettings(
-    accuracy: LocationAccuracy.high, // Specify accuracy
-    distanceFilter: 100, // Update location only if user moves by 100 meters
-  );
-
-  // Get current user location
-  Position position = await Geolocator.getCurrentPosition(
-    locationSettings: locationSettings,
-  );
-
-  setState(() {
-    _userLocation = position;
-    _nearestCoordinate = _findNearestCoordinate();
-  });
-}
-
 
   Map<String, dynamic>? _findNearestCoordinate() {
     if (_userLocation == null) return null;
@@ -86,7 +81,6 @@ Future<void> _getUserLocation() async {
     return nearestCoord;
   }
 
-  // Haversine formula to calculate distance between two lat/lng points
   double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const p = 0.017453292519943295; // Pi / 180
     const r = 6371; // Earth radius in kilometers
@@ -96,20 +90,18 @@ Future<void> _getUserLocation() async {
   }
 
   void _openMap(Map<String, dynamic> coordinate) async {
-  final isAvailable = await MapLauncher.isMapAvailable(MapType.google);
+    final isAvailable = await MapLauncher.isMapAvailable(MapType.google);
 
-  // Check if the value is not null and is true
-  if (isAvailable != null && isAvailable) {
-    await MapLauncher.showMarker(
-      mapType: MapType.google,
-      coords: Coords(coordinate['lat'], coordinate['lng']),
-      title: coordinate['name'],
-    );
-  } else {
-    print("No map application available.");
+    if (isAvailable != null && isAvailable) {
+      await MapLauncher.showMarker(
+        mapType: MapType.google,
+        coords: Coords(coordinate['lat'], coordinate['lng']),
+        title: coordinate['name'],
+      );
+    } else {
+      print("No map application available.");
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +109,7 @@ Future<void> _getUserLocation() async {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Map Coordinates'),
-        backgroundColor:  const Color.fromARGB(255, 111, 128, 222),
+        backgroundColor: const Color.fromARGB(255, 111, 128, 222),
       ),
       body: Column(
         children: [
@@ -126,10 +118,21 @@ Future<void> _getUserLocation() async {
               itemCount: coordinates.length,
               itemBuilder: (context, index) {
                 var coord = coordinates[index];
-                return ListTile(
-                  title: Text(coord['name']),
-                  subtitle: Text('Lat: ${coord['lat']}, Lng: ${coord['lng']}'),
-                  onTap: () => _openMap(coord),
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  elevation: 4,
+                  child: ListTile(
+                    leading: const Icon(Icons.place, color: Color.fromARGB(255, 111, 128, 222)),
+                    title: Text(
+                      coord['name'],
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      'Lat: ${coord['lat']}, Lng: ${coord['lng']}',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    onTap: () => _openMap(coord),
+                  ),
                 );
               },
             ),
