@@ -1,6 +1,6 @@
 
-
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/big_Button.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Lower%20Limb/lower_limb_button.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/upper_limb_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -39,7 +39,7 @@ class LandingPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              const BigButton(), // TODO: edit this one out eg replace
+              const UpperLimbButton(), // TODO: edit this one out eg replace
             
               const SizedBox(height: 20),
 
@@ -59,7 +59,7 @@ class LandingPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              const BigButton(), // TODO: edit this one out eg replace, make it so that it reflects the needs of the user based on pre assessment
+              const UpperLimbButton(), // TODO: edit this one out eg replace, make it so that it reflects the needs of the user based on pre assessment
 
               const SizedBox(height: 20),
 
@@ -77,9 +77,10 @@ class LandingPage extends StatelessWidget {
                 
               ),
               const SizedBox(height: 12),
-              const BigButton(),
+              const UpperLimbButton(),
            
               const SizedBox(height: 18),
+              const LowerLimbButton(),
            
               const SizedBox(height: 18),
           

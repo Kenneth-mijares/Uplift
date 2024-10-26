@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/front_arm_raise.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/side_arm_raises.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
-class ButtonPage extends StatelessWidget {
-  const ButtonPage({super.key});
+class LowerLimbPage extends StatelessWidget {
+  const LowerLimbPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     // List of page widgets (each from a separate file)
     final List<Widget> pages = [
-      const SideArmRaises(),
-      const FrontArmRaise(),
+      // const SideArmRaises(),
+      // const FrontArmRaise(),
     ];
 
     // List of names corresponding to each page
@@ -38,7 +37,7 @@ class ButtonPage extends StatelessWidget {
               ClipRRect(
                 
                 child: Image.asset(
-                    'assets/images/Stroke-feature-image.jpg',
+                    'assets/images/lowerLimb.png',
                     height: 250,
                     width: 400,
                     fit: BoxFit.cover, 
