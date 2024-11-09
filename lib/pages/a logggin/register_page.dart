@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class RegisterPage extends StatefulWidget {
@@ -17,6 +18,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
+  final _firstNameController = TextEditingController(); 
+  final _lastNameController = TextEditingController(); 
+  final _genderController = TextEditingController(); 
+  final _ageController = TextEditingController(); 
   bool _isPasswordVisible = false;
 
 
@@ -25,6 +30,10 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmpasswordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _genderController.dispose();
+    _ageController.dispose();
 
     super.dispose();
   }
@@ -37,9 +46,27 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _passwordController.text.trim(),
       );
       // Add user details
+
+      addUserDetails(
+        _firstNameController.text.trim(),
+        _lastNameController.text.trim(),
+        _emailController.text.trim(),
+        _genderController.text.trim(),
+        int.parse(_ageController.text.trim()),
+      );
   
     }
   
+  }
+
+  Future addUserDetails(String firstName, String lastName, String email, String gender, int age) async{
+    await FirebaseFirestore.instance.collection('users').add({
+      'first name': firstName ,
+      'last name': lastName,
+      'email': email,
+      'gender': gender,
+      'age': age,
+    });
   }
 
   bool passwordConfirmed() {
@@ -84,6 +111,107 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 30),
+
+
+                    //fname textfield
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 111, 128, 222),
+                              ),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: TextField(
+                              controller: _firstNameController,
+                              decoration: const InputDecoration(
+                                hintText: 'First Name',
+                                
+                                border: InputBorder.none,
+                                prefixIcon: Icon(Icons.person, color:  Color.fromARGB(255, 111, 128, 222),), // Added icon
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 20), // Adjust vertical padding
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),  
+
+                        //lname textfield
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 111, 128, 222),
+                              ),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: TextField(
+                              controller: _lastNameController,
+                              decoration: const InputDecoration(
+                                hintText: 'Last Name',
+                                
+                                border: InputBorder.none,
+                                prefixIcon: Icon(Icons.person, color:  Color.fromARGB(255, 111, 128, 222),), // Added icon
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 20), // Adjust vertical padding
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),  
+
+                        //gender textfield
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 111, 128, 222),
+                              ),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: TextField(
+                              controller: _genderController,
+                              decoration: const InputDecoration(
+                                hintText: 'Gender',
+                                
+                                border: InputBorder.none,
+                                prefixIcon: Icon(Icons.wc, color:  Color.fromARGB(255, 111, 128, 222),), // Added icon
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 20), // Adjust vertical padding
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),  
+
+                        //age textfield
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 111, 128, 222),
+                              ),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: TextField(
+                              controller: _ageController,
+                              decoration: const InputDecoration(
+                                hintText: 'Age',
+                                
+                                border: InputBorder.none,
+                                prefixIcon: Icon(Icons.calendar_today, color:  Color.fromARGB(255, 111, 128, 222),), // Added icon
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 20), // Adjust vertical padding
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),  
           
                     
                     //Email textfield

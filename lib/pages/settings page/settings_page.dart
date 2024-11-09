@@ -1,4 +1,4 @@
-import 'package:capstone/pages/settings%20page/user_details_page.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -61,41 +61,26 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildAddDetailsPrompt() {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 60,
           backgroundImage: NetworkImage('https://via.placeholder.com/150'),
         ),
-        const SizedBox(height: 20),
-        const Text(
+        SizedBox(height: 20),
+        Text(
           'Hello User!',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 20),
-        const Text(
+        SizedBox(height: 20),
+        Text(
           'To personalize your experience, we recommend adding some details about you.',
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 16),
         ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-  onPressed: () async {
-    // Navigate to UserDetailsPage and wait for the result
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UserDetailsPage()),
-    );
-
-    // Check if details were updated
-    if (result == true) {
-      fetchUserDetails(); // Refresh user details
-    }
-  },
-  child: const Text('Start now?'),
-),
-
+        SizedBox(height: 20),
+        
       ],
     );
   }
