@@ -163,7 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         const SizedBox(height: 10),  
 
-                        //gender textfield
+                        // Gender dropdown field
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Container(
@@ -173,22 +173,29 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            child: TextField(
-                              controller: _genderController,
+                            child: DropdownButtonFormField<String>(
                               decoration: const InputDecoration(
                                 hintText: 'Gender',
-                                
                                 border: InputBorder.none,
-                                prefixIcon: Icon(Icons.wc, color:  Color.fromARGB(255, 111, 128, 222),), // Added icon
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 20), // Adjust vertical padding
+                                prefixIcon: Icon(Icons.wc, color: Color.fromARGB(255, 111, 128, 222)),
+                                contentPadding: EdgeInsets.symmetric(vertical: 20),
                               ),
+                              value: null, // Initial value, null means no selection
+                              items: ['Male', 'Female'].map((String gender) {
+                                return DropdownMenuItem<String>(
+                                  value: gender,
+                                  child: Text(gender),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                _genderController.text = newValue ?? ''; // Update the controller
+                              },
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),  
+                        const SizedBox(height: 10),
 
-                        //age textfield
+                        // Age text field (number only)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Container(
@@ -200,19 +207,18 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             child: TextField(
                               controller: _ageController,
+                              keyboardType: TextInputType.number, // Numeric input only
                               decoration: const InputDecoration(
                                 hintText: 'Age',
-                                
                                 border: InputBorder.none,
-                                prefixIcon: Icon(Icons.calendar_today, color:  Color.fromARGB(255, 111, 128, 222),), // Added icon
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 20), // Adjust vertical padding
+                                prefixIcon: Icon(Icons.calendar_today, color: Color.fromARGB(255, 111, 128, 222)),
+                                contentPadding: EdgeInsets.symmetric(vertical: 20),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),  
-          
+
+                                  
                     
                     //Email textfield
                         Padding(

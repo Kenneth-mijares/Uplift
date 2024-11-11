@@ -1,7 +1,7 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'edit_details_page.dart'; // Import the EditDetailsPage
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -11,29 +11,30 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String firstName = "";
-  String lastName = "";
-  String email = "";
-  String gender = "";
+  String firstName = 'User';
 
   @override
   void initState() {
     super.initState();
-    fetchUserDetails();
+    _loadUserDetails();
   }
 
-  Future<void> fetchUserDetails() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-      if (userDoc.exists) {
+  Future<void> _loadUserDetails() async {
+    try {
+      String email = FirebaseAuth.instance.currentUser!.email!;
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        var userDoc = querySnapshot.docs.first;
         setState(() {
-          firstName = userDoc['first name'] ?? "";
-          lastName = userDoc['last name'] ?? "";
-          email = userDoc['email'] ?? "";
-          gender = userDoc['gender'] ?? "";
+          firstName = userDoc['first name'] ?? 'User';
         });
       }
+    } catch (e) {
+      print("Error loading user details: $e");
     }
   }
 
@@ -53,62 +54,51 @@ class _SettingsPageState extends State<SettingsPage> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: firstName.isEmpty ? _buildAddDetailsPrompt() : _buildUserDetails(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          Image.asset(
+            'assets/icons/settingIcon.png',
+            width: 400,
+            height: 130,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Hello $firstName!',
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 13),
+          const Text(
+            'This page allows you to customize your personal Details. Adjust settings to your preferences.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Edit Personal Details'),
+            onTap: () async {
+              // Navigate to EditDetailsPage and wait for the result
+              bool? detailsUpdated = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const EditDetailsPage()),
+              );
+
+              // If details were updated, reload user details
+              if (detailsUpdated == true) {
+                _loadUserDetails();
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Log Out'),
+            onTap: FirebaseAuth.instance.signOut,
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildAddDetailsPrompt() {
-    return const Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircleAvatar(
-          radius: 60,
-          backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-        ),
-        SizedBox(height: 20),
-        Text(
-          'Hello User!',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 20),
-        Text(
-          'To personalize your experience, we recommend adding some details about you.',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 20),
-        
-      ],
-    );
-  }
-
-  Widget _buildUserDetails() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const CircleAvatar(
-          radius: 60,
-          backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          'Hello $firstName!',
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          'Your email: $email',
-          style: const TextStyle(fontSize: 16),
-        ),
-        Text(
-          'Gender: $gender',
-          style: const TextStyle(fontSize: 16),
-        ),
-        // You can add more user details here
-      ],
     );
   }
 }

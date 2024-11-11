@@ -14,7 +14,8 @@ class _MapsPageState extends State<MapsPage> {
   List<Map<String, dynamic>> coordinates = [
     {'name': 'Place A', 'lat': 37.7749, 'lng': -122.4194},
     {'name': 'Place B', 'lat': 34.0522, 'lng': -118.2437},
-    {'name': 'Place C', 'lat': 40.7128, 'lng': -74.0060},
+    {'name': 'Place C', 'lat': 14.327685347578488, 'lng': 120.94368500275104},
+  
   ];
 
   Position? _userLocation;
@@ -128,7 +129,7 @@ class _MapsPageState extends State<MapsPage> {
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     subtitle: Text(
-                      'Lat: ${coord['lat']}, Lng: ${coord['lng']}',
+                      'Lat: ${coord['lat']},\nLng: ${coord['lng']}',
                       style: const TextStyle(color: Colors.grey),
                     ),
                     onTap: () => _openMap(coord),
