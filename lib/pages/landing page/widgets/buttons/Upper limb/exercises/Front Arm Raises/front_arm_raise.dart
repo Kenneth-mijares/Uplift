@@ -351,7 +351,7 @@ class _FrontArmRaiseState extends State<FrontArmRaise> {
                         // Navigate to the CameraPage when "Start" is pressed
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const CameraPageFrontArm(),
+                            builder: (context) =>  const CameraPageFrontArm(),
                           ),
                         );
                       },

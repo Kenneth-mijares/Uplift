@@ -39,35 +39,42 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future signUp() async {
-    if (passwordConfirmed()) {
-      //Create user
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  if (passwordConfirmed()) {
+    try {
+      // Create user and get the UID
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Add user details
+      String uid = userCredential.user!.uid; // Get the UID
 
+      // Add user details using the UID as the document ID
       addUserDetails(
+        uid,
         _firstNameController.text.trim(),
         _lastNameController.text.trim(),
         _emailController.text.trim(),
         _genderController.text.trim(),
         int.parse(_ageController.text.trim()),
       );
-  
+    } catch (e) {
+      // Handle errors (e.g., show an error message)
+      print(e);
     }
-  
   }
+}
 
-  Future addUserDetails(String firstName, String lastName, String email, String gender, int age) async{
-    await FirebaseFirestore.instance.collection('users').add({
-      'first name': firstName ,
-      'last name': lastName,
-      'email': email,
-      'gender': gender,
-      'age': age,
-    });
-  }
+
+  Future addUserDetails(String uid, String firstName, String lastName, String email, String gender, int age) async {
+  await FirebaseFirestore.instance.collection('users').doc(uid).set({
+    'first name': firstName,
+    'last name': lastName,
+    'email': email,
+    'gender': gender,
+    'age': age,
+  });
+}
+
 
   bool passwordConfirmed() {
     if (_passwordController.text.trim() ==

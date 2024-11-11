@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:capstone/pages/landing%20page/widgets/service/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart'; // For handling camera permissions
 
@@ -13,6 +14,8 @@ class _CameraPageFrontArmState extends State<CameraPageFrontArm> {
   CameraController? _cameraController;
   List<CameraDescription>? cameras;
   int selectedCameraIndex = 0; // Keep track of which camera is being used
+
+  final FirestoreService _firestoreService = FirestoreService();
 
   @override
   void initState() {
@@ -98,11 +101,70 @@ class _CameraPageFrontArmState extends State<CameraPageFrontArm> {
     super.dispose();
   }
 
+  // Function to show the confirmation dialog when the user presses Stop and save to Firestore
+  Future<void> _showStopConfirmationDialog() async {
+    bool? shouldStop = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Stop'),
+          content: const Text('Are you sure you want to stop the current Exercise now?/nDoing so will set the completion to partial'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User cancels the action
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirms the action
+              },
+              child: const Text('Stop'),
+            ),
+          ],
+        );
+      },
+    );
+
+    // If the user confirms, stop the camera, save the report, and navigate back
+    if (shouldStop == true) {
+      // Save the exercise report
+      await _firestoreService.saveExerciseReport(
+        exerciseName: 'Front Arm Raises',
+        dateOfCompletion: DateTime.now(),
+        completionStatus: 'Partial', // Specify the completion status
+      );
+
+      // Navigate back to the previous screen
+      Navigator.of(context).pop(); 
+
+      // Show a confirmation dialog indicating that the report was saved
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Report Saved'),
+            content: const Text('Your exercise report has been saved successfully.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Camera Page'),
         automaticallyImplyLeading: false,
       ),
       body: Column(
@@ -122,9 +184,7 @@ class _CameraPageFrontArmState extends State<CameraPageFrontArm> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Go back to the main page
-                  },
+                  onPressed: _showStopConfirmationDialog, // Show confirmation dialog when pressed
                   child: const Text('Stop'),
                 ),
                 ElevatedButton(
