@@ -109,7 +109,12 @@ class _MapsPageState extends State<MapsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Map Coordinates'),
+        title: const Text(
+          'Map Coordinates',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: const Color.fromARGB(255, 111, 128, 222),
       ),
       body: Column(

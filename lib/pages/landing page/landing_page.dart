@@ -12,7 +12,13 @@ class LandingPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Exercises'),
+        title: const Text(
+          'Exercises',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+
         backgroundColor: const Color.fromARGB(255, 111, 128, 222),
       ),
       body: Padding(

@@ -43,7 +43,12 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text(
+          'Settings',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: const Color.fromARGB(255, 111, 128, 222),
         actions: [
           GestureDetector(

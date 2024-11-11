@@ -8,7 +8,12 @@ class ReportsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Reports'),
+        title: const Text(
+          'Reports',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: const Color.fromARGB(255, 111, 128, 222),
       ),
       body: Column(
