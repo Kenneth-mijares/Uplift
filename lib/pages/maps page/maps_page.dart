@@ -1,3 +1,4 @@
+import 'package:capstone/pages/maps%20page/coordinates.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:map_launcher/map_launcher.dart';
@@ -11,12 +12,7 @@ class MapsPage extends StatefulWidget {
 }
 
 class _MapsPageState extends State<MapsPage> {
-  List<Map<String, dynamic>> coordinates = [
-    {'name': 'Place A', 'lat': 37.7749, 'lng': -122.4194},
-    {'name': 'Place B', 'lat': 34.0522, 'lng': -118.2437},
-    {'name': 'Place C', 'lat': 14.327685347578488, 'lng': 120.94368500275104},
   
-  ];
 
   Position? _userLocation;
   Map<String, dynamic>? _nearestCoordinate;
