@@ -1,4 +1,5 @@
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/camera_page_front_arm.dart';
+
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Side%20Arm%20Raises/camera_page_side_arm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -29,9 +30,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
       ),
     );
 
-    // Add a listener to the controller to monitor the current playback position
     _controller.addListener(() {
-      // Check if the video time has reached or exceeded the endAt time
       if (_controller.value.position.inSeconds >= endAt) {
         _controller.pause();  // Pause the video at the specified time
       }
@@ -71,9 +70,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                 ),
               ),
 
-
               const SizedBox(height: 23),
-
 
               Text(
                 'INSTRUCTIONS',
@@ -84,15 +81,13 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                           color:  Color.fromARGB(255, 111, 128, 222), 
                         ),
                       ), 
-                
               ),
               const SizedBox(height: 18),
 
               Row(
                 children: [
                   Expanded(
-                    child: 
-                    Text("Start by sitting or standing with your back straight and feet shoulder-width apart. Slowly raise your arm out to the side with a slight bend in the elbow until it's parallel to the ground.",
+                    child: Text("Slowly raise your arm out to the side, keeping your elbow slightly bent. Lift to shoulder height or as high as comfortable.",
                      style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
                           fontSize: 15,
@@ -109,8 +104,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
               Row(
                 children: [
                   Expanded(
-                    child: 
-                    Text("Pause briefly at the top, then lower your arm back down. Focus on controlled movements and stop if you feel pain.",
+                    child: Text("Slowly lower the arm back down to the starting position. Exhale as you raise the arm, inhale as you lower it.",
                       style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
                           fontSize: 15,
@@ -133,7 +127,6 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                           color:  Color.fromARGB(255, 111, 128, 222), 
                         ),
                       ), 
-                
               ),
 
               const SizedBox(height: 18),
@@ -148,9 +141,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
 
                   const SizedBox(width: 8),
                   Expanded(
-                    child: 
-                    
-                    Text("Slouching or leaning forward can strain the back and reduce effectiveness. ",
+                    child: Text("Starting with a weight that is too heavy can strain muscles and lead to poor form.",
                       style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
                           fontSize: 15,
@@ -174,9 +165,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
 
                   const SizedBox(width: 8),
                   Expanded(
-                    child: 
-                    
-                    Text("Pushing through pain can worsen injury.",
+                    child: Text("Raising the arm too fast can cause jerky motions and increase the risk of injury.",
                       style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
                           fontSize: 15,
@@ -200,9 +189,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
 
                   const SizedBox(width: 8),
                   Expanded(
-                    child: 
-                    
-                    Text("Swinging the arms instead of lifting them with control can lead to injury. ",
+                    child: Text("Pushing the arm beyond a comfortable range can cause discomfort, especially after a stroke.",
                       style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
                           fontSize: 15,
@@ -213,22 +200,6 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                   ),
                 ],
               ),
-
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: 
-              //       Text("lorem",
-              //         style: GoogleFonts.nunito(
-              //           textStyle: const TextStyle(
-              //             fontSize: 15,
-              //             fontWeight: FontWeight.w500,
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
 
               const SizedBox(height: 18),
 
@@ -241,7 +212,6 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                           color:  Color.fromARGB(255, 111, 128, 222), 
                         ),
                       ), 
-                
               ),
 
               const SizedBox(height: 18),
@@ -256,9 +226,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
 
                   const SizedBox(width: 8),
                   Expanded(
-                    child: 
-                    
-                    Text("Maintain a straight spine.",
+                    child: Text("Begin with no weight or a very light weight and increase as tolerated.",
                       style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
                           fontSize: 15,
@@ -282,9 +250,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
 
                   const SizedBox(width: 8),
                   Expanded(
-                    child: 
-                    
-                    Text("If pain occurs, stop and reassess the technique.",
+                    child: Text("Watch your posture in a mirror or ask a caregiver to monitor the arm for proper form.",
                       style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
                           fontSize: 15,
@@ -308,9 +274,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
 
                   const SizedBox(width: 8),
                   Expanded(
-                    child: 
-                    
-                    Text("Focus on slow, controlled movements.",
+                    child: Text("Practice the exercise regularly to build strength and improve mobility over time.",
                       style: GoogleFonts.nunito(
                         textStyle: const TextStyle(
                           fontSize: 15,
@@ -325,19 +289,16 @@ class _SideArmRaisesState extends State<SideArmRaises> {
               const SizedBox(height: 5),
 
               Row(
-              // Aligns buttons to the ends
               children: [
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      // Handle close action
                       Navigator.of(context).pop(); // Closes the current screen
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color.fromARGB(255, 111, 128, 222), minimumSize: const Size(80, 50),
                       side: const BorderSide(color:Color.fromARGB(255, 111, 128, 222),
-                      
-                      ),
+                       ),
                     
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     ),
@@ -348,10 +309,9 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                 Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-                        // Navigate to the CameraPage when "Start" is pressed
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) =>  const CameraPageFrontArm(),
+                            builder: (context) =>  const CameraPageSideArm(),
                           ),
                         );
                       },
@@ -361,14 +321,11 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                       foregroundColor:  const Color.fromARGB(255, 250, 250, 250),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     ),
-                    child: const Text('Start'),
+                    child: const Text('Start Exercise'),
                   ),
                 ),
               ],
             ),
-         
-
-   
             ],
           ),
         ),

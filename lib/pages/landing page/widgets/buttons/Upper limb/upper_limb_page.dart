@@ -1,6 +1,8 @@
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Shoulder%20Rotation/shoulder_rotation.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Side%20Arm%20Raises/side_arm_raises.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/front_arm_raise.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/side_arm_raises.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 class UpperLimbPage extends StatelessWidget {
@@ -12,16 +14,20 @@ class UpperLimbPage extends StatelessWidget {
     final List<Widget> pages = [
       const SideArmRaises(),
       const FrontArmRaise(),
+      const ShoulderRotation(),
     ];
 
     // List of names corresponding to each page
     final List<String> pageNames = [
       'Side Arm Raises',
       'Front Arm Raises',
+      'Shoulder Rotation',
+
     ];
 
     // List of subtitles corresponding to each page
     final List<String> pageSubtitles = [
+      '00:30',
       '00:30',
       '00:30',
     ];

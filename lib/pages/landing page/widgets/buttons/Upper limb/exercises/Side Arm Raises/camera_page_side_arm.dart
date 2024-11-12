@@ -3,14 +3,14 @@ import 'package:capstone/pages/landing%20page/widgets/service/firestore_service.
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart'; // For handling camera permissions
 
-class CameraPageFrontArm extends StatefulWidget {
-  const CameraPageFrontArm({super.key});
+class CameraPageSideArm extends StatefulWidget {
+  const CameraPageSideArm({super.key});
 
   @override
-  State<CameraPageFrontArm> createState() => _CameraPageFrontArmState();
+  State<CameraPageSideArm> createState() => _CameraPageSideArmState();
 }
 
-class _CameraPageFrontArmState extends State<CameraPageFrontArm> {
+class _CameraPageSideArmState extends State<CameraPageSideArm> {
   CameraController? _cameraController;
   List<CameraDescription>? cameras;
   int selectedCameraIndex = 0; // Keep track of which camera is being used
@@ -132,7 +132,7 @@ class _CameraPageFrontArmState extends State<CameraPageFrontArm> {
     if (shouldStop == true) {
       // Save the exercise report
       await _firestoreService.saveExerciseReport(
-        exerciseName: 'Front Arm Raises',
+        exerciseName: 'Side Arm Raises', //change the name of the exercise
         dateOfCompletion: DateTime.now(),
         completionStatus: 'Partial', // Specify the completion status
       );
