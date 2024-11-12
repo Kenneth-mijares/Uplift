@@ -1,8 +1,9 @@
-import 'package:capstone/pages/maps%20page/coordinates.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:map_launcher/map_launcher.dart';
+import 'package:standard_searchbar/old/standard_searchbar.dart';
 import 'dart:math';
+import 'coordinates.dart'; // Import your coordinates file
 
 class MapsPage extends StatefulWidget {
   const MapsPage({super.key});
@@ -12,10 +13,9 @@ class MapsPage extends StatefulWidget {
 }
 
 class _MapsPageState extends State<MapsPage> {
-  
-
   Position? _userLocation;
   Map<String, dynamic>? _nearestCoordinate;
+  String searchQuery = "";
 
   @override
   void initState() {
@@ -52,6 +52,27 @@ class _MapsPageState extends State<MapsPage> {
     setState(() {
       _userLocation = position;
       _nearestCoordinate = _findNearestCoordinate();
+      _sortCoordinatesByDistance();
+    });
+  }
+
+  void _sortCoordinatesByDistance() {
+    if (_userLocation == null) return;
+
+    coordinates.sort((a, b) {
+      double distanceA = _calculateDistance(
+        _userLocation!.latitude,
+        _userLocation!.longitude,
+        a['lat'],
+        a['lng'],
+      );
+      double distanceB = _calculateDistance(
+        _userLocation!.latitude,
+        _userLocation!.longitude,
+        b['lat'],
+        b['lng'],
+      );
+      return distanceA.compareTo(distanceB);
     });
   }
 
@@ -102,6 +123,11 @@ class _MapsPageState extends State<MapsPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> filteredCoordinates = coordinates
+        .where((coord) =>
+            coord['name'].toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -113,48 +139,96 @@ class _MapsPageState extends State<MapsPage> {
         ),
         backgroundColor: const Color.fromARGB(255, 111, 128, 222),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: coordinates.length,
-              itemBuilder: (context, index) {
-                var coord = coordinates[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  elevation: 4,
-                  child: ListTile(
-                    leading: const Icon(Icons.place, color: Color.fromARGB(255, 111, 128, 222)),
-                    title: Text(
-                      coord['name'],
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: 680,
+          child: Column(
+            children: [
+          
+              Container(
+                color: const Color.fromARGB(255, 111, 128, 222),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Image.asset(
+                      'assets/icons/searchIcon.png',
+                      width: 400,
+                      height: 130,
                     ),
-                    subtitle: Text(
-                      'Lat: ${coord['lat']},\nLng: ${coord['lng']}',
-                      style: const TextStyle(color: Colors.grey),
+                    const SizedBox(height: 10),
+                                
+                    const Text(
+                      'Find the nearest Hospital for you',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
                     ),
-                    onTap: () => _openMap(coord),
-                  ),
-                );
-              },
-            ),
-          ),
-          if (_userLocation != null && _nearestCoordinate != null)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text('Your Location: (${_userLocation!.latitude}, ${_userLocation!.longitude})'),
-                  const SizedBox(height: 10),
-                  Text('Nearest Coordinate: ${_nearestCoordinate!['name']}'),
-                  ElevatedButton(
-                    onPressed: () => _openMap(_nearestCoordinate!),
-                    child: const Text('Open Nearest Location in Maps'),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: StandardSearchBar(
+                      onChanged: (value) {
+                          setState(() {
+                            searchQuery = value;
+                          });
+                        },
+                               
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-        ],
+          
+
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredCoordinates.length,
+                  itemBuilder: (context, index) {
+                    var coord = filteredCoordinates[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      elevation: 4,
+                      child: ListTile(
+                        leading: const Icon(Icons.place,
+                            color: Color.fromARGB(255, 111, 128, 222)),
+                        title: Text(
+                          coord['name'],
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        subtitle: Text(
+                          'Lat: ${coord['lat']},\nLng: ${coord['lng']}',
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                        onTap: () => _openMap(coord),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              if (_userLocation != null && _nearestCoordinate != null)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('Your Location: (${_userLocation!.latitude}, ${_userLocation!.longitude})'),
+                      const SizedBox(height: 10),
+                      Text('Nearest Coordinate: ${_nearestCoordinate!['name']}'),
+                      ElevatedButton(
+                        onPressed: () => _openMap(_nearestCoordinate!),
+                        child: const Text('Open Nearest Location in Maps'),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

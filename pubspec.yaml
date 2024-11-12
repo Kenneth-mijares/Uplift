@@ -50,6 +50,7 @@ dependencies:
   permission_handler: ^11.3.1
   intl: ^0.19.0
   table_calendar: ^3.1.2
+  standard_searchbar: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,7 @@ flutter:
     - assets/images/background.png
     - assets/images/uplift_logo.png
     - assets/icons/settingIcon.png
+    - assets/icons/searchIcon.png
     
   #   - images/a_dot_ham.jpeg
 
