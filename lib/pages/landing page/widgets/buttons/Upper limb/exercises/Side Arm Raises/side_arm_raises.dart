@@ -1,3 +1,4 @@
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/camera_page_front_arm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -50,7 +51,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Front Arm Raises'), // add appbar title
+        title: const Text('Side Arm Raises'), // add appbar title
         automaticallyImplyLeading: false, 
       ),
       body: Padding(
@@ -345,11 +346,15 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                 ),
                 const SizedBox(width: 12,),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Handle start action
-                      // Start video or any other action
-                    },
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        // Navigate to the CameraPage when "Start" is pressed
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>  const CameraPageFrontArm(),
+                          ),
+                        );
+                      },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(80, 50),
                       backgroundColor: const Color.fromARGB(255, 111, 128, 222),

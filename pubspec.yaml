@@ -82,6 +82,7 @@ flutter:
     - assets/images/uplift_logo.png
     - assets/icons/settingIcon.png
     - assets/icons/searchIcon.png
+    - assets/icons/exerciseIcon.png
     
   #   - images/a_dot_ham.jpeg
 
