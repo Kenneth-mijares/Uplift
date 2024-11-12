@@ -162,7 +162,7 @@ class _ReportsPageState extends State<ReportsPage> {
                           padding: const EdgeInsets.all(16.0),
                           child: const Center(
                             child: Text(
-                              'Content for Tab 1',
+                              'Currently no Data',
                               style: TextStyle(
                                 color: Color.fromARGB(255, 0, 0, 0),
                                 fontSize: 24,
