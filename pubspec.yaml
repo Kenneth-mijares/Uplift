@@ -41,7 +41,7 @@ dependencies:
   cloud_firestore: ^5.4.2
   google_nav_bar: ^5.0.6
   ionicons: ^0.2.2
-  youtube_player_flutter: ^9.1.1
+  youtube_player_flutter: ^8.0.0
   google_maps_flutter: ^2.9.0
   geolocator: ^13.0.1
   map_launcher: ^3.5.0
@@ -51,6 +51,7 @@ dependencies:
   intl: ^0.19.0
   table_calendar: ^3.1.2
   standard_searchbar: ^2.1.1
+  teachable: ^0.0.2
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,7 @@ flutter:
     - assets/icons/settingIcon.png
     - assets/icons/searchIcon.png
     - assets/icons/exerciseIcon.png
+    - assets/html/index.html
     
   #   - images/a_dot_ham.jpeg
 

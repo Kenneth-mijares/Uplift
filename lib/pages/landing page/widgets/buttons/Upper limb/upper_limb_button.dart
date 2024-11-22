@@ -44,7 +44,7 @@ class UpperLimbButton extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '2 workouts | 1 min',
+                  '3 workouts | 2 min',
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white, // Text color

@@ -21,7 +21,7 @@ class LowerLimbButton extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(20), // Rounded edges for the image
             child: Image.asset(
-              'assets/images/lowerLimb.png',
+              'assets/images/lowerLimb.png',      
               width: 400, // Adjust the width of the button (image)
               height: 130, // Adjust the height of the button (image)
               fit: BoxFit.cover, // Ensure the image covers the entire button space
@@ -45,7 +45,7 @@ class LowerLimbButton extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '3 workouts | 1 min',
+                  '0 workouts | 0 min',
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white, // Text color
