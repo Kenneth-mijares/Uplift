@@ -21,21 +21,85 @@ class LoginPageState extends State<LoginPage> {
   bool _isPasswordVisible = false; // Track password visibility
 
   Future signIn() async {
-    // Loading circle
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(child: CircularProgressIndicator());
-        });
+  // Loading circle
+  showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(child: CircularProgressIndicator());
+      });
 
+  try {
+    // Attempt to sign in
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
     );
 
-    // Pop the loading circle
+    // Pop the loading circle after successful login
     Navigator.of(context).pop();
+  } on FirebaseAuthException catch (e) {
+    // Pop the loading circle if there's an error
+    Navigator.of(context).pop();
+
+    // Show an alert dialog for incorrect password
+    if (e.code == 'wrong-password') {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Login Failed'),
+            content: const Text('The password is incorrect. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else if (e.code == 'user-not-found') {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Login Failed'),
+            content: const Text('No user found with this email address.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Handle other errors
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Login Failed'),
+            content: Text(' ${e.message}'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
+}
 
   @override
   void dispose() {

@@ -38,7 +38,34 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  Future signUp() async {
+  Future<void> showErrorDialog(String message) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // Prevent dismissal by tapping outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Sign-Up Error'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(message),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future signUp() async {
   if (passwordConfirmed()) {
     try {
       // Create user and get the UID
@@ -49,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
       String uid = userCredential.user!.uid; // Get the UID
 
       // Add user details using the UID as the document ID
-      addUserDetails(
+      await addUserDetails(
         uid,
         _firstNameController.text.trim(),
         _lastNameController.text.trim(),
@@ -58,11 +85,15 @@ class _RegisterPageState extends State<RegisterPage> {
         int.parse(_ageController.text.trim()),
       );
     } catch (e) {
-      // Handle errors (e.g., show an error message)
-      print(e);
+      // Show error dialog with the error message
+      await showErrorDialog(e.toString());
     }
+  } else {
+    // Show error dialog for password mismatch
+    await showErrorDialog('Passwords do not match. Please try again.');
   }
 }
+
 
 
   Future addUserDetails(String uid, String firstName, String lastName, String email, String gender, int age) async {
