@@ -158,18 +158,18 @@ class _ReportsPageState extends State<ReportsPage> {
                     child: TabBarView(
                       children: [
                         // Content for Tab 1
-                        Container(
-                          padding: const EdgeInsets.all(16.0),
-                          child: const Center(
-                            child: Text(
-                              'Currently no Data',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                fontSize: 24,
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Container(
+                        //   padding: const EdgeInsets.all(16.0),
+                        //   child: const Center(
+                        //     child: Text(
+                        //       'Currently no Data',
+                        //       style: TextStyle(
+                        //         color: Color.fromARGB(255, 0, 0, 0),
+                        //         fontSize: 24,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                         // Content for Tab 2: List of Reports
                         StreamBuilder<QuerySnapshot>(
                           stream: _reportsStream,
