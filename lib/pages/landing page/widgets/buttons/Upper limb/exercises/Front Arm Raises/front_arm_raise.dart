@@ -1,8 +1,10 @@
 
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/html.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/face_detection_screen.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/flask.dart';
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/pose_estimation_front_arm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class FrontArmRaise extends StatefulWidget {
@@ -14,6 +16,7 @@ class FrontArmRaise extends StatefulWidget {
 
 class _FrontArmRaiseState extends State<FrontArmRaise> {
   final videoUrl = "https://www.youtube.com/watch?v=FYSOPmPyhlo"; // add youtube url
+  final flaskUrl = "http://192.168.177.116:5000"; // flask url
   
   late YoutubePlayerController _controller;
   final int startAt = 173; // Start the video 
@@ -353,8 +356,8 @@ class _FrontArmRaiseState extends State<FrontArmRaise> {
                         // Navigate to the CameraPage when "Start" is pressed
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) =>  const PoseEstimationFrontArm(),
-                            //builder: (context) =>  const CameraPageFrontArm(),
+                            //builder: (context) =>  const PoseEstimationFrontArm(),
+                            builder: (context) =>   PoseEstimationFrontArm(),
                           ),
                         );
                       },
@@ -367,6 +370,29 @@ class _FrontArmRaiseState extends State<FrontArmRaise> {
                     child: const Text('Start'),
                   ),
                 ),
+
+                // Expanded(
+                //     child: ElevatedButton(
+                //       onPressed: () async {
+                //         final uri = Uri.parse(flaskUrl);
+                //         if (await canLaunchUrl(uri)) {
+                //           await launchUrl(uri);
+                //         } else {
+                //           ScaffoldMessenger.of(context).showSnackBar(
+                //             const SnackBar(content: Text('Could not launch URL')),
+                //           );
+                //         }
+                //       },
+
+                //       style: ElevatedButton.styleFrom(
+                //         minimumSize: const Size(80, 50),
+                //         backgroundColor: const Color.fromARGB(255, 111, 128, 222),
+                //         foregroundColor: const Color.fromARGB(255, 250, 250, 250),
+                //         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                //       ),
+                //       child: const Text('Start'),
+                //     ),
+                //   ),
               ],
             ),
          

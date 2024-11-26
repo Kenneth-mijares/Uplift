@@ -85,24 +85,60 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
                     var resp = jsonDecode(res);
                     setState(() {
                       poseResult = resp.toString();
-                      firstpose = (resp['arm raised'] * 100.0).toString();
-                      secondpose = (resp['arm raised'] * 100.0).toString();
-                      // Update the display text based on pose values
-                      double firstPoseValue = double.tryParse(firstpose ?? '0') ?? 0;
-                      double secondPoseValue = double.tryParse(secondpose ?? '0') ?? 0;
-
-                      if (firstPoseValue > secondPoseValue) {
-                        displayText = 'Lower arms gently';
-                      } else if (secondPoseValue > firstPoseValue) {
-                        displayText = 'Raise arms carefully';
-                      } else {
-                        displayText = '';
-                      }
+                      firstpose = (resp['arm lowered'] * 100.0).toInt().toString(); // Convert to int
+                      secondpose = (resp['arm raised'] * 100.0).toInt().toString(); // Convert to int
                     });
+
+                    // Update the display text with a delay
+                    Future.delayed(const Duration(seconds: 2), () {
+                      setState(() {
+                        double firstPoseValue = double.tryParse(firstpose ?? '0') ?? 0;
+                        double secondPoseValue = double.tryParse(secondpose ?? '0') ?? 0;
+
+                        if (firstPoseValue > secondPoseValue) {
+                          displayText = 'Raise arms gently';
+                        } else if (secondPoseValue > firstPoseValue) {
+                          displayText = 'Lower arms carefully';
+                        } else {
+                          displayText = '';
+                        }
+                      });
+                    });
+
                     print("Pose Estimation Result: $resp");
                   },
+
                 ),
               ),
+
+              if (poseResult != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    color: Colors.black54,
+                    child: Text(
+                      'Pose:\n arms lowered $firstpose\n arms raised $secondpose ',
+                      style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    ),
+                  ),
+                ),
+              // Display the text based on pose comparison
+              if (displayText.isNotEmpty)
+                Positioned(
+                  bottom: 80,
+                  left: 16,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    color: Colors.greenAccent,
+                    child: Text(
+                      displayText,
+                      style: const TextStyle(color: Colors.black, fontSize: 18),
+                    ),
+                  ),
+                ),
+
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -117,33 +153,7 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
               ),
             ],
           ),
-          if (poseResult != null)
-            Positioned(
-              bottom: 16,
-              left: 16,
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                color: Colors.black54,
-                child: Text(
-                  'Pose: $poseResult',
-                  style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-              ),
-            ),
-          // Display the text based on pose comparison
-          if (displayText.isNotEmpty)
-            Positioned(
-              bottom: 80,
-              left: 16,
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                color: Colors.greenAccent,
-                child: Text(
-                  displayText,
-                  style: const TextStyle(color: Colors.black, fontSize: 18),
-                ),
-              ),
-            ),
+          
         ],
       ),
     );

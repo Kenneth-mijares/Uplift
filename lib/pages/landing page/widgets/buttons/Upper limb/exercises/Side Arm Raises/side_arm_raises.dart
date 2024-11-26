@@ -2,6 +2,7 @@
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Side%20Arm%20Raises/camera_page_side_arm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class SideArmRaises extends StatefulWidget {
@@ -13,6 +14,7 @@ class SideArmRaises extends StatefulWidget {
 
 class _SideArmRaisesState extends State<SideArmRaises> {
   final videoUrl = "https://www.youtube.com/watch?v=FYSOPmPyhlo"; // add youtube url
+  final flaskUrl = "http://192.168.177.116:5000"; // flask url
   
   late YoutubePlayerController _controller;
   final int startAt = 120; // Start the video 
@@ -309,21 +311,25 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                 Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>  const CameraPageSideArm(),
-                          ),
-                        );
+                        final uri = Uri.parse(flaskUrl);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Could not launch URL')),
+                          );
+                        }
                       },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(80, 50),
-                      backgroundColor: const Color.fromARGB(255, 111, 128, 222),
-                      foregroundColor:  const Color.fromARGB(255, 250, 250, 250),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(80, 50),
+                        backgroundColor: const Color.fromARGB(255, 111, 128, 222),
+                        foregroundColor: const Color.fromARGB(255, 250, 250, 250),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                      child: const Text('Start'),
                     ),
-                    child: const Text('Start Exercise'),
                   ),
-                ),
               ],
             ),
             ],

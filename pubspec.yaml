@@ -52,6 +52,11 @@ dependencies:
   table_calendar: ^3.1.2
   standard_searchbar: ^2.1.1
   teachable: ^0.0.2
+  google_ml_kit: ^0.19.0
+  google_mlkit_face_detection: ^0.12.0
+  image_picker: ^1.1.2
+  http: ^1.2.2
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +67,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

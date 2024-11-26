@@ -1,3 +1,4 @@
+
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Shoulder%20Rotation/shoulder_rotation.dart';
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Side%20Arm%20Raises/side_arm_raises.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exerc
 import 'package:google_fonts/google_fonts.dart';
 
 class UpperLimbPage extends StatelessWidget {
+
   const UpperLimbPage({super.key});
 
   @override
@@ -13,7 +15,7 @@ class UpperLimbPage extends StatelessWidget {
     // List of page widgets (each from a separate file)
     final List<Widget> pages = [
       const SideArmRaises(),
-      const FrontArmRaise(),
+      FrontArmRaise(),
       const ShoulderRotation(),
     ];
 

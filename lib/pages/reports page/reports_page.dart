@@ -146,7 +146,7 @@ class _ReportsPageState extends State<ReportsPage> {
                   // TabBar
                   const TabBar(
                     tabs: [
-                      Tab(text: 'Overview'),
+                      //Tab(text: 'Overview'),
                       Tab(text: 'Reports'),
                     ],
                     labelColor: Color.fromARGB(255, 111, 128, 222),
