@@ -78,7 +78,7 @@ class UpperLimbPage extends StatelessWidget {
                     SizedBox(height: 20,),
 
                     Text(
-                      '1 min | 2 workouts',
+                      '1 min | 3 workouts',
                       style: TextStyle(fontSize: 16, color: Colors.white70),
                     ),
                   ],
@@ -97,7 +97,7 @@ class UpperLimbPage extends StatelessWidget {
             children: [
               
               Text(
-                    '1 min | 2 Workouts',
+                    '1 min | 3 Workouts',
                        style: GoogleFonts.kanit(
                             textStyle: const TextStyle(
                               fontSize: 20,
