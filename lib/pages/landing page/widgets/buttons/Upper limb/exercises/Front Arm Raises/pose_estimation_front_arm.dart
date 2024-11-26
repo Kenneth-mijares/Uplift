@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:teachable/teachable.dart';
@@ -14,8 +15,67 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
   final FirestoreService _firestoreService = FirestoreService();
   String? poseResult;
   String? firstpose;
-  String? secondpose; // Store the pose estimation results
-  String displayText = ''; // This will hold the message to display
+  String? secondpose;
+  String displayText = ''; // Message to display
+  int remainingTime = 30; // Timer starts at 30 seconds
+  Timer? timer; // Timer instance
+  bool isTimerRunning = false; // To track if the timer has started
+
+  Future<void> startTimerWithDelay() async {
+    setState(() {
+      displayText = 'Get ready...';
+    });
+
+    // Add a 5-second delay before starting the timer
+    await Future.delayed(const Duration(seconds: 5));
+
+    setState(() {
+      displayText = ''; // Clear "Get ready..." message
+      isTimerRunning = true;
+      remainingTime = 30;
+    });
+
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (remainingTime > 0) {
+          remainingTime--;
+        } else {
+          timer.cancel();
+          _completeExercise(); // Mark the exercise as completed
+        }
+      });
+    });
+  }
+
+  Future<void> _completeExercise() async {
+    await _firestoreService.saveExerciseReport(
+      exerciseName: 'Front Arm Raises',
+      dateOfCompletion: DateTime.now(),
+      completionStatus: 'Completed', // Mark as completed
+    );
+
+    setState(() {
+      isTimerRunning = false; // Reset the timer status
+      displayText = 'Exercise Completed!';
+    });
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Congratulations!'),
+          content: const Text('You have successfully completed the exercise.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _showStopConfirmationDialog() async {
     bool? shouldStop = await showDialog<bool>(
@@ -44,8 +104,13 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
       await _firestoreService.saveExerciseReport(
         exerciseName: 'Front Arm Raises',
         dateOfCompletion: DateTime.now(),
-        completionStatus: 'Partial',
+        completionStatus: 'Partial', // Mark as partial
       );
+
+      setState(() {
+        isTimerRunning = false;
+        displayText = 'Exercise Stopped';
+      });
 
       Navigator.of(context).pop();
 
@@ -54,8 +119,7 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Report Saved'),
-            content:
-                const Text('Your exercise report has been saved successfully.'),
+            content: const Text('Your exercise report has been saved successfully.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -66,6 +130,12 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
         },
       );
     }
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel(); // Cancel timer on dispose
+    super.dispose();
   }
 
   @override
@@ -85,11 +155,10 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
                     var resp = jsonDecode(res);
                     setState(() {
                       poseResult = resp.toString();
-                      firstpose = (resp['arm lowered'] * 100.0).toInt().toString(); // Convert to int
-                      secondpose = (resp['arm raised'] * 100.0).toInt().toString(); // Convert to int
+                      firstpose = (resp['arm lowered'] * 100.0).toInt().toString();
+                      secondpose = (resp['arm raised'] * 100.0).toInt().toString();
                     });
 
-                    // Update the display text with a delay
                     Future.delayed(const Duration(seconds: 2), () {
                       setState(() {
                         double firstPoseValue = double.tryParse(firstpose ?? '0') ?? 0;
@@ -107,10 +176,8 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
 
                     print("Pose Estimation Result: $resp");
                   },
-
                 ),
               ),
-
               if (poseResult != null)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -119,26 +186,26 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
                     color: Colors.black54,
                     child: Text(
                       'Pose:\n arms lowered $firstpose\n arms raised $secondpose ',
-                      style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
-              // Display the text based on pose comparison
-              if (displayText.isNotEmpty)
-                Positioned(
-                  bottom: 80,
-                  left: 16,
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    color: Colors.greenAccent,
-                    child: Text(
-                      displayText,
-                      style: const TextStyle(color: Colors.black, fontSize: 18),
-                    ),
+              if (isTimerRunning)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Remaining Time: $remainingTime seconds',
+                    style: const TextStyle(fontSize: 20, color: Colors.red),
                   ),
                 ),
-
-
+              if (!isTimerRunning)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: startTimerWithDelay,
+                    child: const Text('Start Timer'),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -153,7 +220,6 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
               ),
             ],
           ),
-          
         ],
       ),
     );

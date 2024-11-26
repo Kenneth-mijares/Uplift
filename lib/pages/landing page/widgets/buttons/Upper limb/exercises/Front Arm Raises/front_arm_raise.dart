@@ -1,6 +1,4 @@
 
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/face_detection_screen.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/flask.dart';
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/pose_estimation_front_arm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

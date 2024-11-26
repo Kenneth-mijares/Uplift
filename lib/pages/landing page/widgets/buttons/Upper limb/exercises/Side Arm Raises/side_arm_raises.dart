@@ -315,6 +315,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                         if (await canLaunchUrl(uri)) {
                           await launchUrl(uri);
                         } else {
+                        
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Could not launch URL')),
                           );
