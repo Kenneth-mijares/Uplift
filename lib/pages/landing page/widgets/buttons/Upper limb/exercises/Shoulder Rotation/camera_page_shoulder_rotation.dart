@@ -1,21 +1,24 @@
 import 'package:camera/camera.dart';
-import 'package:capstone/pages/landing%20page/widgets/service/firestore_service.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Shoulder%20Rotation/face_detector_service.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart'; // For handling camera permissions
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CameraPageShoulderRotation extends StatefulWidget {
   const CameraPageShoulderRotation({super.key});
 
   @override
-  State<CameraPageShoulderRotation> createState() => _CameraPageSideArmState();
+  State<CameraPageShoulderRotation> createState() => _CameraPageShoulderRotationState();
 }
 
-class _CameraPageSideArmState extends State<CameraPageShoulderRotation> {
+class _CameraPageShoulderRotationState extends State<CameraPageShoulderRotation> {
   CameraController? _cameraController;
   List<CameraDescription>? cameras;
-  int selectedCameraIndex = 0; // Keep track of which camera is being used
+  int selectedCameraIndex = 0;
 
-  final FirestoreService _firestoreService = FirestoreService();
+  final FaceDetectorService _faceDetectorService = FaceDetectorService();
+  bool _isProcessing = false;
+  List<Face> _faces = [];
 
   @override
   void initState() {
@@ -23,20 +26,17 @@ class _CameraPageSideArmState extends State<CameraPageShoulderRotation> {
     _checkPermissionsAndInitializeCamera();
   }
 
-  // Check camera permission and initialize
   Future<void> _checkPermissionsAndInitializeCamera() async {
-    // Request camera permission if not already granted
     var status = await Permission.camera.status;
     if (!status.isGranted) {
       await Permission.camera.request();
     }
 
-    // If permission is granted, initialize the camera
     if (await Permission.camera.isGranted) {
-      cameras = await availableCameras(); // Make sure we await the availableCameras function
+      cameras = await availableCameras();
 
       if (cameras != null && cameras!.isNotEmpty) {
-        await _initializeCamera(selectedCameraIndex: _getFrontCameraIndex()); // Start with front camera
+        await _initializeCamera(selectedCameraIndex: _getFrontCameraIndex());
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No camera found on this device.')),
@@ -49,116 +49,73 @@ class _CameraPageSideArmState extends State<CameraPageShoulderRotation> {
     }
   }
 
-  // Initialize the camera with the selected camera index
   Future<void> _initializeCamera({required int selectedCameraIndex}) async {
     if (cameras != null && cameras!.isNotEmpty) {
       _cameraController = CameraController(
-        cameras![selectedCameraIndex], 
+        cameras![selectedCameraIndex],
         ResolutionPreset.medium,
       );
       await _cameraController?.initialize();
-      setState(() {}); // Refresh the UI when the camera is ready
+
+      _cameraController?.startImageStream((CameraImage image) {
+        if (!_isProcessing) {
+          _isProcessing = true;
+          _processImage(image);
+        }
+      });
+
+      setState(() {});
     }
   }
 
-  // Get the index of the front camera
   int _getFrontCameraIndex() {
     for (int i = 0; i < cameras!.length; i++) {
       if (cameras![i].lensDirection == CameraLensDirection.front) {
         return i;
       }
     }
-    return 0; // Default to back camera if no front camera found
+    return 0;
   }
 
-  // Get the index of the back camera
   int _getBackCameraIndex() {
     for (int i = 0; i < cameras!.length; i++) {
       if (cameras![i].lensDirection == CameraLensDirection.back) {
         return i;
       }
     }
-    return 0; // Default to front camera if no back camera found
+    return 0;
   }
 
-  // Switch between front and back camera
   void _switchCamera() {
     if (cameras != null && cameras!.isNotEmpty) {
       selectedCameraIndex = selectedCameraIndex == _getFrontCameraIndex()
           ? _getBackCameraIndex()
           : _getFrontCameraIndex();
 
-      _initializeCamera(selectedCameraIndex: selectedCameraIndex); // Reinitialize camera with new index
+      _initializeCamera(selectedCameraIndex: selectedCameraIndex);
     }
   }
 
-  // Check if the current camera is front-facing
   bool get isFrontCamera => cameras != null && cameras![selectedCameraIndex].lensDirection == CameraLensDirection.front;
+
+  Future<void> _processImage(CameraImage image) async {
+    try {
+      final faces = await _faceDetectorService.detectFaces(image);
+      setState(() {
+        _faces = faces;
+      });
+    } catch (e) {
+      print('Error processing image: $e');
+    } finally {
+      _isProcessing = false;
+    }
+  }
 
   @override
   void dispose() {
     _cameraController?.dispose();
+    _faceDetectorService.dispose();
     super.dispose();
-  }
-
-  // Function to show the confirmation dialog when the user presses Stop and save to Firestore
-  Future<void> _showStopConfirmationDialog() async {
-    bool? shouldStop = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm Stop'),
-          content: const Text('Are you sure you want to stop the current Exercise now?/nDoing so will set the completion to partial'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // User cancels the action
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true); // User confirms the action
-              },
-              child: const Text('Stop'),
-            ),
-          ],
-        );
-      },
-    );
-
-    // If the user confirms, stop the camera, save the report, and navigate back
-    if (shouldStop == true) {
-      // Save the exercise report
-      await _firestoreService.saveExerciseReport(
-        exerciseName: 'Shoulder Rotation', //change the name of the exercise
-        dateOfCompletion: DateTime.now(),
-        completionStatus: 'Partial', // Specify the completion status
-      );
-
-      // Navigate back to the previous screen
-      Navigator.of(context).pop(); 
-
-      // Show a confirmation dialog indicating that the report was saved
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Report Saved'),
-            content: const Text('Your exercise report has been saved successfully.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
   }
 
   @override
@@ -166,15 +123,24 @@ class _CameraPageSideArmState extends State<CameraPageShoulderRotation> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        title: const Text('Shoulder Rotation Camera'),
       ),
       body: Column(
         children: [
           Expanded(
             child: _cameraController != null && _cameraController!.value.isInitialized
-                ? Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.identity()..rotateY(isFrontCamera ? 3.1416 : 0), // Mirror front camera
-                    child: CameraPreview(_cameraController!),
+                ? Stack(
+                    children: [
+                      Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.identity()..rotateY(isFrontCamera ? 3.1416 : 0),
+                        child: CameraPreview(_cameraController!),
+                      ),
+                      if (_faces.isNotEmpty)
+                        CustomPaint(
+                          painter: FacePainter(_faces, _cameraController!.value.previewSize!),
+                        ),
+                    ],
                   )
                 : const Center(child: CircularProgressIndicator()),
           ),
@@ -184,11 +150,7 @@ class _CameraPageSideArmState extends State<CameraPageShoulderRotation> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: _showStopConfirmationDialog, // Show confirmation dialog when pressed
-                  child: const Text('Stop'),
-                ),
-                ElevatedButton(
-                  onPressed: _switchCamera, // Switch camera when pressed
+                  onPressed: _switchCamera,
                   child: const Text('Switch Camera'),
                 ),
               ],
@@ -198,4 +160,33 @@ class _CameraPageSideArmState extends State<CameraPageShoulderRotation> {
       ),
     );
   }
+}
+
+class FacePainter extends CustomPainter {
+  final List<Face> faces;
+  final Size imageSize;
+
+  FacePainter(this.faces, this.imageSize);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    for (var face in faces) {
+      final rect = Rect.fromLTRB(
+        face.boundingBox.left * size.width / imageSize.width,
+        face.boundingBox.top * size.height / imageSize.height,
+        face.boundingBox.right * size.width / imageSize.width,
+        face.boundingBox.bottom * size.height / imageSize.height,
+      );
+
+      canvas.drawRect(rect, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

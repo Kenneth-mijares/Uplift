@@ -3,6 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
@@ -24,6 +29,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final _ageController = TextEditingController(); 
   bool _isPasswordVisible = false;
 
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
+  String? _imageUrl;
+
+
 
   @override
   void dispose() {
@@ -37,6 +47,41 @@ class _RegisterPageState extends State<RegisterPage> {
 
     super.dispose();
   }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery); // Or ImageSource.camera for using the camera.
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+  Future<void> _uploadImage(String uid) async {
+    if (_image != null) {
+      try {
+        // Create a reference to Firebase Storage with the user's UID
+        final storageRef = FirebaseStorage.instance.ref().child('profile_pictures/$uid');
+        // Upload the image to Firebase Storage
+        await storageRef.putFile(_image!);
+        // Get the image URL
+        _imageUrl = await storageRef.getDownloadURL();
+
+        // After uploading, save the image URL to Firestore
+        await _saveImageUrl(uid);
+      } catch (e) {
+        await showErrorDialog('Image upload failed: $e');
+      }
+    }
+  }
+
+  Future<void> _saveImageUrl(String uid) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'profile_picture': _imageUrl, // Store the image URL in Firestore
+    });
+  }
+
+
+
 
   Future<void> showErrorDialog(String message) async {
   return showDialog<void>(
@@ -75,6 +120,9 @@ Future signUp() async {
       );
       String uid = userCredential.user!.uid; // Get the UID
 
+      // Upload the image if picked
+      await _uploadImage(uid);
+
       // Add user details using the UID as the document ID
       await addUserDetails(
         uid,
@@ -93,6 +141,7 @@ Future signUp() async {
     await showErrorDialog('Passwords do not match. Please try again.');
   }
 }
+
 
 
 
@@ -355,6 +404,27 @@ Future signUp() async {
                         ),
                         const SizedBox(height: 5),
                     const SizedBox(height: 12),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: GestureDetector(
+                        onTap: _pickImage,
+                        child: Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color.fromARGB(255, 111, 128, 222)),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: _image == null
+                              ? const Center(child: Text('Pick Profile Picture'))
+                              : Image.file(
+                                  _image!,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      ),
+                    ),
+
                     //Sign In button
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),

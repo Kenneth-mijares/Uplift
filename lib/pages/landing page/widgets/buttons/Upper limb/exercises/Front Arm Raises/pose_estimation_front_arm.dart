@@ -142,7 +142,7 @@ class _PoseEstimationFrontArmState extends State<PoseEstimationFrontArm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pose Estimation"),
+        title: const Text("Front Arm Raises"),
       ),
       body: Stack(
         children: [

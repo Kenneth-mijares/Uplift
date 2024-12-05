@@ -273,6 +273,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.18.1"
+  firebase_storage:
+    dependency: "direct main"
+    description:
+      name: firebase_storage
+      sha256: def84a1cb27e725b9d53337b0e3d0066c7f1e429f70b7c6d6e0612f49361f347
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.3.6"
+  firebase_storage_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_storage_platform_interface
+      sha256: "1108af14afa04e1fd070d42a0bec4d2e0feafced303b2b62513481c8890edce2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.33"
+  firebase_storage_web:
+    dependency: transitive
+    description:
+      name: firebase_storage_web
+      sha256: e99aa6f46c0a6e418012cc05abef045465f4845052b02730f6675c81dabfe270
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.10.5"
   fixnum:
     dependency: transitive
     description:
@@ -286,6 +310,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_face_api:
+    dependency: "direct main"
+    description:
+      name: flutter_face_api
+      sha256: "846e564dcf9d8f650f91a44a71d0dc47148b61d9d61f3cf054bbb498c8c392e2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.3.663"
+  flutter_face_core_basic:
+    dependency: "direct main"
+    description:
+      name: flutter_face_core_basic
+      sha256: ab344aaa3461e891da343ff1e870b1638a567b69b59619ac429412445df1ee30
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.3.152"
   flutter_inappwebview:
     dependency: transitive
     description:
@@ -896,6 +936,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      sha256: ea0b925899e64ecdfbf9c7becb60d5b50e706ade44a85b2363be2a22d88117d2
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.2"
   sanitize_html:
     dependency: transitive
     description:
@@ -1005,6 +1053,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.2"
+  tflite_flutter:
+    dependency: "direct main"
+    description:
+      name: tflite_flutter
+      sha256: "48e6fde2ad97162bb66a16a142f4c4698add9e8cd397ce9d1cc7451b55537ac1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.11.0"
   typed_data:
     dependency: transitive
     description:
