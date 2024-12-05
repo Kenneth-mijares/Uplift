@@ -6,14 +6,19 @@ import 'package:flutter_face_api/flutter_face_api.dart';
 import 'package:image_picker/image_picker.dart';
 
 
-class _MyAppState extends State<MyApp> {
+class Regula extends StatefulWidget {
+  @override
+  _RegulaState createState() => _RegulaState();
+}
+
+class _RegulaState extends State<Regula> {
   var faceSdk = FaceSDK.instance;
 
   var _status = "nil";
   var _similarityStatus = "nil";
   var _livenessStatus = "nil";
-  var _uiImage1 = Image.asset('assets/images/portrait.png');
-  var _uiImage2 = Image.asset('assets/images/portrait.png');
+  var _uiImage1 = Image.asset('assets/icons/portrait.png');
+  var _uiImage2 = Image.asset('assets/icons/portrait.png');
 
   set status(String val) => setState(() => _status = val);
   set similarityStatus(String val) => setState(() => _similarityStatus = val);
@@ -63,8 +68,8 @@ class _MyAppState extends State<MyApp> {
     status = "Ready";
     similarityStatus = "nil";
     livenessStatus = "nil";
-    uiImage2 = Image.asset('assets/images/portrait.png');
-    uiImage1 = Image.asset('assets/images/portrait.png');
+    uiImage2 = Image.asset('assets/icons/portrait.png');
+    uiImage1 = Image.asset('assets/icons/portrait.png');
     mfImage1 = null;
     mfImage2 = null;
   }
@@ -195,7 +200,4 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
+

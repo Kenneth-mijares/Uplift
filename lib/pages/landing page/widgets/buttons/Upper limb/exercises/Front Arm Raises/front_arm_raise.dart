@@ -1,5 +1,7 @@
 
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/face_reco.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/pose_estimation_with_face_matching.dart';
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/regula.dart';
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/pose_estimation_front_arm.dart';
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Shoulder%20Rotation/face_detector_service.dart';
 import 'package:flutter/material.dart';
@@ -357,7 +359,7 @@ class _FrontArmRaiseState extends State<FrontArmRaise> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             //builder: (context) =>  const PoseEstimationFrontArm(),
-                            builder: (context) =>   PoseEstimationFrontArm(),
+                            builder: (context) =>   PoseEstimationWithFaceMatching(),
                           ),
                         );
                       },

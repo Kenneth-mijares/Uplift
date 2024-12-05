@@ -62,6 +62,7 @@ dependencies:
   flutter_face_api: ^6.3.663
   firebase_storage: ^12.3.6
   flutter_face_core_basic: ^6.3.152
+  screenshot: ^3.0.0
   
 
 dev_dependencies:
@@ -99,9 +100,11 @@ flutter:
     - assets/images/lowerLimb.png
     - assets/images/background.png
     - assets/images/uplift_logo.png
+    - assets/images/reference_face.jpg
     - assets/icons/settingIcon.png
     - assets/icons/searchIcon.png
     - assets/icons/exerciseIcon.png
+    - assets/icons/portrait.png
     - assets/html/index.html
     - assets/mobilefacerecognition.tflite
     
