@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:flutter_face_api/flutter_face_api.dart';
 import 'package:teachable/teachable.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PoseEstimationWithFaceMatching extends StatefulWidget {
   @override
@@ -21,43 +24,85 @@ class _PoseEstimationWithFaceMatchingState
   String similarityStatus = 'Unknown';
   MatchFacesImage? referenceImage;
 
+  Timer? captureTimer;
+  bool isProcessing = false;
+
   @override
   void initState() {
     super.initState();
     loadReferenceImage();
+    startAutoCapture();
+  }
+
+  @override
+  void dispose() {
+    captureTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> loadReferenceImage() async {
-    // Load the reference image from assets
-    ByteData assetData = await DefaultAssetBundle.of(context)
-        .load("assets/images/reference_face.jpg");
-    referenceImage = MatchFacesImage(
-        assetData.buffer.asUint8List(), ImageType.PRINTED);
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception("User not logged in.");
+
+      Directory appDir = await getApplicationDocumentsDirectory();
+      String filePath = '${appDir.path}/${user.uid}.png';
+
+      File referenceFile = File(filePath);
+      if (!referenceFile.existsSync()) throw Exception("Reference image not found.");
+
+      Uint8List imageData = await referenceFile.readAsBytes();
+      referenceImage = MatchFacesImage(imageData, ImageType.PRINTED);
+
+      print("Reference image loaded successfully.");
+    } catch (e) {
+      print("Error loading reference image: $e");
+      setState(() {
+        similarityStatus = 'Reference image loading failed.';
+      });
+    }
   }
 
   Future<void> captureAndMatchFace() async {
-    // Capture the screen
-    Uint8List? capturedImage =
-        await screenshotController.capture(pixelRatio: 1.5);
-
-    if (capturedImage == null || referenceImage == null) return;
-
-    // Prepare the captured image for face matching
-    MatchFacesImage capturedMatchImage =
-        MatchFacesImage(capturedImage, ImageType.PRINTED);
-
-    // Perform face matching
-    MatchFacesRequest request =
-        MatchFacesRequest([referenceImage!, capturedMatchImage]);
-    var response = await faceSdk.matchFaces(request);
-    var matchedFaces = response.results
-        .where((result) => result.similarity > 0.75)
-        .toList();
+    if (isProcessing || referenceImage == null) return;
 
     setState(() {
-      similarityStatus = matchedFaces.isNotEmpty
-          ? 'Match: ${(matchedFaces[0].similarity * 100).toStringAsFixed(2)}%'
-          : 'No Match';
+      isProcessing = true;
+    });
+
+    try {
+      Uint8List? capturedImage =
+          await screenshotController.capture(pixelRatio: 1.5);
+
+      if (capturedImage == null) return;
+
+      MatchFacesImage capturedMatchImage =
+          MatchFacesImage(capturedImage, ImageType.PRINTED);
+
+      MatchFacesRequest request =
+          MatchFacesRequest([referenceImage!, capturedMatchImage]);
+      var response = await faceSdk.matchFaces(request);
+      var matchedFaces = response.results
+          .where((result) => result.similarity > 0.75)
+          .toList();
+
+      setState(() {
+        similarityStatus = matchedFaces.isNotEmpty
+            ? 'Match: ${(matchedFaces[0].similarity * 100).toStringAsFixed(2)}%'
+            : 'No Match';
+      });
+    } catch (e) {
+      print("Error during face match: $e");
+    } finally {
+      setState(() {
+        isProcessing = false;
+      });
+    }
+  }
+
+  void startAutoCapture() {
+    captureTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+      captureAndMatchFace();
     });
   }
 
@@ -86,10 +131,6 @@ class _PoseEstimationWithFaceMatchingState
                 'Pose Result: $poseResult',
                 style: TextStyle(fontSize: 16),
               ),
-            ElevatedButton(
-              onPressed: captureAndMatchFace,
-              child: Text("Capture and Match Face"),
-            ),
             if (similarityStatus.isNotEmpty)
               Text(
                 'Face Match Status: $similarityStatus',
