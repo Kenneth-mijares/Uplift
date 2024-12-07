@@ -63,6 +63,7 @@ dependencies:
   firebase_storage: ^12.3.6
   flutter_face_core_basic: ^6.3.152
   screenshot: ^3.0.0
+  audioplayers: ^6.1.0
   
 
 dev_dependencies:
@@ -107,6 +108,7 @@ flutter:
     - assets/icons/portrait.png
     - assets/html/index.html
     - assets/mobilefacerecognition.tflite
+    - assets/alarm.mp3
     
   #   - images/a_dot_ham.jpeg
 
