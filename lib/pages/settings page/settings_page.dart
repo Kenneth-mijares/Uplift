@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
 import 'edit_details_page.dart'; // Import the EditDetailsPage
 
 class SettingsPage extends StatefulWidget {
@@ -12,11 +14,13 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   String firstName = 'User';
+  String? savedImagePath;
 
   @override
   void initState() {
     super.initState();
     _loadUserDetails();
+    _loadSavedImage();
   }
 
   Future<void> _loadUserDetails() async {
@@ -35,6 +39,25 @@ class _SettingsPageState extends State<SettingsPage> {
       }
     } catch (e) {
       print("Error loading user details: $e");
+    }
+  }
+
+  Future<void> _loadSavedImage() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        Directory appDir = await getApplicationDocumentsDirectory();
+        String filePath = '${appDir.path}/${user.uid}.png';
+
+        if (File(filePath).existsSync()) {
+          setState(() {
+            savedImagePath = filePath;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error loading saved image: $e');
     }
   }
 
@@ -63,11 +86,19 @@ class _SettingsPageState extends State<SettingsPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Image.asset(
-            'assets/icons/settingIcon.png',
-            width: 400,
-            height: 130,
-          ),
+          savedImagePath != null
+              ? CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.grey[300],
+                backgroundImage: savedImagePath != null
+                ? FileImage(File(savedImagePath!))
+                : null,
+              )
+              : Image.asset(
+                  'assets/icons/settingIcon.png',
+                  width: 400,
+                  height: 130,
+                ),
           const SizedBox(height: 20),
           Text(
             'Hello $firstName!',
