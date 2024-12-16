@@ -1,12 +1,11 @@
 
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/face_reco.dart';
+
 import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/pose_estimation_with_face_matching.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/demos/regula.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Front%20Arm%20Raises/pose_estimation_front_arm.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Shoulder%20Rotation/face_detector_service.dart';
+
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class FrontArmRaise extends StatefulWidget {

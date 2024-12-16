@@ -1,9 +1,9 @@
 
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Shoulder%20Rotation/camera_page_shoulder_rotation.dart';
 
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Shoulder%20Rotation/ml_shoulder_rotation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class ShoulderRotation extends StatefulWidget {
@@ -317,7 +317,7 @@ class _ShoulderRotationState extends State<ShoulderRotation> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             //builder: (context) =>  const PoseEstimationFrontArm(),
-                            builder: (context) =>   CameraPageShoulderRotation(),
+                            builder: (context) =>   MlShoulderRotation(),
                           ),
                         );
                       },
@@ -331,29 +331,7 @@ class _ShoulderRotationState extends State<ShoulderRotation> {
                   ),
                 ),
 
-                // Expanded(
-                //     child: ElevatedButton(
-                //       onPressed: () async {
-                //         final uri = Uri.parse(flaskUrl);
-                //         if (await canLaunchUrl(uri)) {
-                //           await launchUrl(uri);
-                //         } else {
-                        
-                //           ScaffoldMessenger.of(context).showSnackBar(
-                //             const SnackBar(content: Text('Could not launch URL')),
-                //           );
-                //         }
-                //       },
-
-                //       style: ElevatedButton.styleFrom(
-                //         minimumSize: const Size(80, 50),
-                //         backgroundColor: const Color.fromARGB(255, 111, 128, 222),
-                //         foregroundColor: const Color.fromARGB(255, 250, 250, 250),
-                //         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                //       ),
-                //       child: const Text('Start'),
-                //     ),
-                //   ),
+              
                 ],
               ),
 

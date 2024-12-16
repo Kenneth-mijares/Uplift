@@ -1,6 +1,6 @@
 
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Side%20Arm%20Raises/camera_page_side_arm.dart';
-import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Side%20Arm%20Raises/pose_estimation_sidearm.dart';
+
+import 'package:capstone/pages/landing%20page/widgets/buttons/Upper%20limb/exercises/Side%20Arm%20Raises/ml_sideArm.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -312,7 +312,7 @@ class _SideArmRaisesState extends State<SideArmRaises> {
                       onPressed: () async {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) =>  const PoseEstimationSidearm(),
+                            builder: (context) =>   MlSidearm(),
                           ),
                         );
                       },

@@ -107,6 +107,8 @@ flutter:
     - assets/icons/exerciseIcon.png
     - assets/icons/portrait.png
     - assets/html/index.html
+    - assets/html/shoulder_rotation.html
+    - assets/html/sidearm.html
     - assets/mobilefacerecognition.tflite
     - assets/alarm.mp3
     
