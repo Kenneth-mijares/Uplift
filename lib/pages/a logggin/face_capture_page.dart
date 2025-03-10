@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_face_api/flutter_face_api.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FaceCapturePage extends StatefulWidget {
   final String userId;
@@ -25,9 +27,19 @@ class _FaceCapturePageState extends State<FaceCapturePage> {
   @override
   void initState() {
     super.initState();
-    _initializeFaceSDK().then((_) {
-      startLiveness();
+    _checkPermissions().then((_) {
+      _initializeFaceSDK().then((_) {
+        startLiveness();
+      });
     });
+  }
+  
+  Future<void> _checkPermissions() async {
+    // Request storage permission for saving to gallery
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
   }
   
   Future<void> _initializeFaceSDK() async {
@@ -92,8 +104,8 @@ class _FaceCapturePageState extends State<FaceCapturePage> {
         _processingComplete = true;
       });
       
-      // Save the image in the format needed for facial recognition
-      await _saveImageForFacialRecognition(result.image!);
+      // Save the image for facial recognition
+      await _saveReferenceImage(result.image!);
       
       if (_livenessStatus == "passed") {
         // Allow user to see the captured image briefly
@@ -111,40 +123,68 @@ class _FaceCapturePageState extends State<FaceCapturePage> {
     }
   }
   
-  Future<void> _saveImageForFacialRecognition(Uint8List imageBytes) async {
+  Future<void> _saveReferenceImage(Uint8List imageBytes) async {
     try {
-      // Get the application documents directory
-      final directory = await getApplicationDocumentsDirectory();
-      
-      // Get current user ID - use the one passed in the widget or from Firebase Auth
-      String userId = widget.userId;
-      if (userId.isEmpty && FirebaseAuth.instance.currentUser != null) {
+      // Get the current user's UID from Firebase Auth
+      String userId;
+      if (FirebaseAuth.instance.currentUser != null) {
         userId = FirebaseAuth.instance.currentUser!.uid;
+      } else {
+        userId = widget.userId;
       }
       
-      // Save the image with the user ID as the filename (matching PoseEstimationWithFaceMatching)
-      final imagePath = '${directory.path}/$userId.png';
-      final imageFile = File(imagePath);
-      await imageFile.writeAsBytes(imageBytes);
+      print("Saving reference image for user: $userId");
       
-      // Also save a copy in the temporary directory for returning to registration page
-      final tempDirectory = await getApplicationDocumentsDirectory();
-      final tempUserDir = Directory('${tempDirectory.path}/temp_${userId}');
-      if (!await tempUserDir.exists()) {
-        await tempUserDir.create(recursive: true);
+      // IMPORTANT: This is the path that PoseEstimationWithFaceMatching uses for face matching
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String filePath = '${appDir.path}/$userId.png';
+      
+      // Create the file and write image bytes to it - do not modify this format
+      final File referenceFile = File(filePath);
+      await referenceFile.writeAsBytes(imageBytes);
+      
+      // Save a copy to gallery as well (this won't affect the face matching)
+      final result = await ImageGallerySaver.saveImage(
+        imageBytes,
+        quality: 100,
+        name: "FaceID_$userId",
+      );
+      
+      print("Saved to gallery: $result");
+      
+      // Verify the reference file was created correctly
+      if (await referenceFile.exists()) {
+        final fileStats = await referenceFile.stat();
+        print("Reference image saved successfully at: $filePath");
+        print("Reference image file size: ${fileStats.size} bytes");
+        
+        // Double-check that the reference file can be read back
+        final testRead = await referenceFile.readAsBytes();
+        print("Reference image can be read: ${testRead.length} bytes");
+      } else {
+        print("Failed to save reference image at: $filePath");
       }
-      final tempImagePath = '${tempUserDir.path}/profile_image.jpg';
+      
+      setState(() {
+        _imagePath = filePath;
+      });
+      
+      // Also save a temporary copy for the registration flow
+      // Make sure the format and location matches what PoseEstimationWithFaceMatching expects
+      final tempDir = Directory('${appDir.path}/temp_$userId');
+      if (!await tempDir.exists()) {
+        await tempDir.create(recursive: true);
+      }
+      final tempImagePath = '${tempDir.path}/profile_image.jpg';
       final tempImageFile = File(tempImagePath);
       await tempImageFile.writeAsBytes(imageBytes);
       
-      setState(() {
-        _imagePath = imagePath; // Return the permanent path
-      });
-      
-      print("Reference image saved at: $imagePath");
-      print("Temporary image saved at: $tempImagePath");
     } catch (e) {
-      print("Error saving image: $e");
+      print("Error saving reference image: $e");
+      // Add more detailed error handling to help debug the issue
+      if (e is FileSystemException) {
+        print("File system error: ${e.message}, path: ${e.path}, osError: ${e.osError}");
+      }
     }
   }
   
@@ -226,11 +266,19 @@ class _FaceCapturePageState extends State<FaceCapturePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  "Please look at the camera and follow the on-screen instructions for face verification.\nThis image will be used for facial recognition during exercises.",
+                  "Please look at the camera and follow the on-screen instructions.\nThis image will be stored for exercise verification and saved to your gallery.",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                 ),
               ),
+              if (_imagePath != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Image saved to both app storage and gallery",
+                    style: const TextStyle(fontSize: 12, color: Colors.green),
+                  ),
+                ),
             ],
           ),
         ),
