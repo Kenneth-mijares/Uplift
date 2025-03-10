@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:capstone/pages/a%20logggin/face_capture_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -25,8 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _ageController = TextEditingController();
 
   bool _isPasswordVisible = false;
-  File? _profileImage; // For storing the selected image
-  final ImagePicker _picker = ImagePicker(); // Image picker instance
+  File? _profileImage; // For storing the captured face image
 
   @override
   void dispose() {
@@ -40,78 +39,144 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  Future<void> pickImage() async {
-    // Pick an image from the gallery
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  // New method to validate user inputs
+  bool validateUserInputs() {
+    // Check if all required fields are filled
+    if (_firstNameController.text.trim().isEmpty ||
+        _lastNameController.text.trim().isEmpty ||
+        _emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty ||
+        _confirmpasswordController.text.trim().isEmpty ||
+        _genderController.text.trim().isEmpty ||
+        _ageController.text.trim().isEmpty) {
+      showErrorDialog('Please fill in all required fields.');
+      return false;
+    }
 
-    if (pickedFile != null) {
-      // Get the application's directory to save the file
-      Directory appDir = await getApplicationDocumentsDirectory();
-      String fileName = 'profile_${DateTime.now().millisecondsSinceEpoch}.png';
-      String filePath = '${appDir.path}/$fileName';
+    // Validate email format
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(_emailController.text.trim())) {
+      showErrorDialog('Please enter a valid email address.');
+      return false;
+    }
 
-      // Save the image locally
-      File localFile = File(pickedFile.path);
-      localFile.copy(filePath).then((File savedFile) {
-        setState(() {
-          _profileImage = savedFile;
-        });
-      }).catchError((e) {
-        print('Error saving image: $e');
+    // Validate password match
+    if (!passwordConfirmed()) {
+      showErrorDialog('Passwords do not match. Please try again.');
+      return false;
+    }
+
+    // Validate age is a number
+    try {
+      int.parse(_ageController.text.trim());
+    } catch (e) {
+      showErrorDialog('Please enter a valid age.');
+      return false;
+    }
+
+    return true;
+  }
+
+  // New method to handle form submission
+  void handleFormSubmission() async {
+    if (validateUserInputs()) {
+      // All inputs are valid, proceed to face capture
+      await navigateToFaceCapture();
+      
+      // If image was captured successfully, sign up
+      if (_profileImage != null) {
+        await signUp();
+      }
+    }
+  }
+
+  Future<void> navigateToFaceCapture() async {
+    // Generate a temporary ID for the user
+    String tempUserId = DateTime.now().millisecondsSinceEpoch.toString();
+    
+    // Navigate to the FaceCapturePage and wait for the result
+    final imagePath = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FaceCapturePage(userId: tempUserId),
+      ),
+    );
+    
+    // If an image path was returned, update the profile image
+    if (imagePath != null) {
+      setState(() {
+        _profileImage = File(imagePath);
       });
     }
   }
 
   Future<void> signUp() async {
-    if (passwordConfirmed()) {
-      try {
-        // Create user with email and password
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
-        String uid = userCredential.user!.uid;
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
 
-        // Save user details to Firestore
-        await addUserDetails(
-          uid,
-          _firstNameController.text.trim(),
-          _lastNameController.text.trim(),
-          _emailController.text.trim(),
-          _genderController.text.trim(),
-          int.parse(_ageController.text.trim()),
-        );
+      // Create user with email and password
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      String uid = userCredential.user!.uid;
 
-        // If a profile image is selected, upload it
-        if (_profileImage != null) {
-          await uploadProfileImage(uid, _profileImage!);
-        }
+      // Save user details to Firestore
+      await addUserDetails(
+        uid,
+        _firstNameController.text.trim(),
+        _lastNameController.text.trim(),
+        _emailController.text.trim(),
+        _genderController.text.trim(),
+        int.parse(_ageController.text.trim()),
+      );
 
-        // After registration, you can navigate to the login page or home screen.
-      } catch (e) {
-        await showErrorDialog(e.toString());
-      }
-    } else {
-      await showErrorDialog('Passwords do not match. Please try again.');
+      // Save the profile image to the user's permanent directory
+      await saveProfileImage(uid, _profileImage!);
+
+      // Close loading dialog
+      Navigator.of(context).pop();
+
+      // After registration is complete, show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Registration completed successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+    } catch (e) {
+      // Close loading dialog if open
+      Navigator.of(context).pop();
+      await showErrorDialog(e.toString());
     }
   }
 
-  Future<void> uploadProfileImage(String uid, File image) async {
+  Future<void> saveProfileImage(String uid, File image) async {
     try {
-      // Save the profile image to Firebase Storage (optional)
-      // If you want to upload the image to Firebase Storage, you can replace the following line with Firebase Storage code.
-      // FirebaseStorage storage = FirebaseStorage.instance;
-      // Reference ref = storage.ref().child('profile_images/$uid.png');
-      // await ref.putFile(image);
-      // String downloadURL = await ref.getDownloadURL();
+      // Create directory for the user if it doesn't exist
+      Directory appDir = await getApplicationDocumentsDirectory();
+      final userDir = Directory('${appDir.path}/$uid');
+      if (!await userDir.exists()) {
+        await userDir.create(recursive: true);
+      }
       
-      // For now, save the image locally with the UID
-      String filePath = '${(await getApplicationDocumentsDirectory()).path}/$uid.png';
-      image.copy(filePath);
-
-      print("Profile image saved locally for UID: $uid");
+      // Save the image to the user's directory
+      String filePath = '${userDir.path}/profile_image.jpg';
+      await image.copy(filePath);
+      
+      print("Profile image saved for UID: $uid at path: $filePath");
+      
+      // Update the user document with the image path
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'profile_image_path': filePath,
+      });
     } catch (e) {
-      print("Error uploading profile image: $e");
+      print("Error saving profile image: $e");
     }
   }
 
@@ -174,14 +239,27 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Display Profile Image or Camera Icon if no image is selected
+                    // Face Capture Button/Display
                     GestureDetector(
-                      onTap: pickImage,
+                      onTap: null, // Disabled manual face capture
                       child: CircleAvatar(
                         radius: 50,
                         backgroundColor: Colors.grey[300],
                         backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
-                        child: _profileImage == null ? Icon(Icons.camera_alt, size: 50, color: Colors.grey) : null,
+                        child: _profileImage == null 
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.camera_alt, size: 30, color: Colors.grey),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    "Face will be captured after form completion",
+                                    style: TextStyle(fontSize: 8, color: Colors.grey),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ) 
+                            : null,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -379,13 +457,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 15),
 
-                    // Sign Up Button
+                    // Sign Up Button - Updated to use handleFormSubmission
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: GestureDetector(
-                        onTap: signUp,
+                        onTap: handleFormSubmission,
                         child: Container(
                           padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(

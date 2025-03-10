@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -14,6 +16,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:audioplayers/audioplayers.dart'; // Add this for sound alarm
 
 class MlSidearm extends StatefulWidget {
+  const MlSidearm({super.key});
+
   @override
   _MlSidearmState createState() =>
       _MlSidearmState();
@@ -177,7 +181,10 @@ class _MlSidearmState
           content: const Text('You have successfully completed the exercise.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                 Navigator.of(context).pop();
+                 Navigator.of(context).pop();
+              },
               child: const Text('OK'),
             ),
           ],
@@ -306,14 +313,14 @@ class _MlSidearmState
         if (matchedFaces.isNotEmpty) {
           // Reset the failed match counter on success
           failedMatchCount = 0;
-          similarityStatus = '$firstName';
+          similarityStatus = firstName;
         } else {
           // Increment the failed match counter on failure
           failedMatchCount++;
           similarityStatus = 'Not Recognized';
 
           // Show alert dialog if failed matches reach six consecutive tries
-          if (failedMatchCount >= 6) {
+          if (failedMatchCount >= 3) {
             failedMatchCount = 0; // Reset counter after showing the dialog
             showNotRecognizedDialog();
           }
@@ -336,10 +343,13 @@ class _MlSidearmState
         return AlertDialog(
           title: const Text('User Not Recognized'),
           content: const Text(
-              'You have not been recognized for six consecutive tries. Please check your setup or position.'),
+              'You have not been recognized for three consecutive tries. Please check your setup or position.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
+              onPressed: ()  {
+                Navigator.of(context).pop(true);
+                Navigator.of(context).pop(true);
+              },
               child: const Text('OK'),
             ),
           ],
@@ -424,10 +434,10 @@ class _MlSidearmState
                       children: [
                         // Icon for face match status
                         Icon(
-                          similarityStatus.contains('$firstName')
+                          similarityStatus.contains(firstName)
                               ? Icons.verified
                               : Icons.cancel,
-                          color: similarityStatus.contains('$firstName')
+                          color: similarityStatus.contains(firstName)
                               ? const Color.fromARGB(255, 109, 165, 233)
                               : Colors.red,
                           size: 30,
@@ -435,11 +445,11 @@ class _MlSidearmState
                         SizedBox(width: 8), // Space between icon and text
                         // Face match status text
                         Text(
-                          '$similarityStatus',
+                          similarityStatus,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: similarityStatus.contains('$firstName')
+                            color: similarityStatus.contains(firstName)
                                 ?  const Color.fromARGB(255, 255, 255, 255)
                                 : Colors.red
                           ),

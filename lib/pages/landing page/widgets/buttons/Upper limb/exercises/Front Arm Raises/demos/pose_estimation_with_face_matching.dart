@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -14,9 +16,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:audioplayers/audioplayers.dart'; // Add this for sound alarm
 
 class PoseEstimationWithFaceMatching extends StatefulWidget {
+  const PoseEstimationWithFaceMatching({super.key});
+
   @override
-  _PoseEstimationWithFaceMatchingState createState() =>
-      _PoseEstimationWithFaceMatchingState();
+
+  State<PoseEstimationWithFaceMatching> createState() => _PoseEstimationWithFaceMatchingState();
 }
 
 class _PoseEstimationWithFaceMatchingState
@@ -306,7 +310,7 @@ class _PoseEstimationWithFaceMatchingState
         if (matchedFaces.isNotEmpty) {
           // Reset the failed match counter on success
           failedMatchCount = 0;
-          similarityStatus = '$firstName';
+          similarityStatus = firstName;
         } else {
           // Increment the failed match counter on failure
           failedMatchCount++;
@@ -424,10 +428,10 @@ class _PoseEstimationWithFaceMatchingState
                       children: [
                         // Icon for face match status
                         Icon(
-                          similarityStatus.contains('$firstName')
+                          similarityStatus.contains(firstName)
                               ? Icons.verified
                               : Icons.cancel,
-                          color: similarityStatus.contains('$firstName')
+                          color: similarityStatus.contains(firstName)
                               ? const Color.fromARGB(255, 109, 165, 233)
                               : Colors.red,
                           size: 30,
@@ -435,11 +439,11 @@ class _PoseEstimationWithFaceMatchingState
                         SizedBox(width: 8), // Space between icon and text
                         // Face match status text
                         Text(
-                          '$similarityStatus',
+                          similarityStatus,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: similarityStatus.contains('$firstName')
+                            color: similarityStatus.contains(firstName)
                                 ?  const Color.fromARGB(255, 255, 255, 255)
                                 : Colors.red
                           ),
