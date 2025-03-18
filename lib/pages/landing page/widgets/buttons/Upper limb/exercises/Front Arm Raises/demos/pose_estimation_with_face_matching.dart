@@ -38,6 +38,7 @@ class _PoseEstimationWithFaceMatchingState
   int remainingTime = 30; // Timer starts at 30 seconds
   Timer? timer; // Timer instance
   bool isTimerRunning = false;
+  bool isTimerPaused = false; // Added for pause functionality
 
   String similarityStatus = 'Unknown';
   MatchFacesImage? referenceImage;
@@ -125,6 +126,47 @@ class _PoseEstimationWithFaceMatchingState
     );
   }
 
+  // Add pause/resume functionality
+  void togglePauseTimer() {
+    if (isTimerRunning) {
+      if (isTimerPaused) {
+        // Resume the timer
+        resumeTimer();
+      } else {
+        // Pause the timer
+        pauseTimer();
+      }
+    }
+  }
+
+  void pauseTimer() {
+    if (timer != null) {
+      timer!.cancel();
+      setState(() {
+        isTimerPaused = true;
+        countdownText = 'Timer Paused';
+      });
+    }
+  }
+
+  void resumeTimer() {
+    setState(() {
+      isTimerPaused = false;
+      countdownText = '';
+      
+      timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          if (remainingTime > 0) {
+            remainingTime--;
+          } else {
+            timer.cancel();
+            _completeExercise();
+          }
+        });
+      });
+    });
+  }
+
   Future<void> startTimerWithDelay() async {
   setState(() {
     countdownText = 'Get ready... 5';  // Show "Get ready... 5"
@@ -144,6 +186,7 @@ class _PoseEstimationWithFaceMatchingState
   setState(() {
     countdownText = ''; // Clear "Get ready..." message
     isTimerRunning = true;
+    isTimerPaused = false; // Make sure it's not paused
     remainingTime = 30; // Set the timer to 30 seconds
   });
 
@@ -169,6 +212,7 @@ class _PoseEstimationWithFaceMatchingState
 
     setState(() {
       isTimerRunning = false; // Reset the timer status
+      isTimerPaused = false; // Reset pause status
       countdownText = 'Exercise Completed!';
     });
 
@@ -222,6 +266,7 @@ class _PoseEstimationWithFaceMatchingState
 
       setState(() {
         isTimerRunning = false;
+        isTimerPaused = false; // Reset pause status
         countdownText = 'Exercise Stopped';
       });
 
@@ -469,31 +514,46 @@ class _PoseEstimationWithFaceMatchingState
 
    
               
-              Row(
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8.0,
+                runSpacing: 8.0,
                 children: [
                   if (isTimerRunning)
-                    Padding(
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.9, // Responsive width
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         'Remaining Time: $remainingTime seconds',
-                        style: const TextStyle(fontSize: 20, color: Color.fromARGB(255, 111, 128, 222),),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 20, color: Color.fromARGB(255, 111, 128, 222)),
                       ),
                     ),
-                  if (!isTimerRunning)
+                  if (!isTimerRunning && !isTimerPaused)
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: OutlinedButton(
                         onPressed: startTimerWithDelay,
                         style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color.fromARGB(255, 111, 128, 222), 
-               
-                        side: const BorderSide(color:Color.fromARGB(255, 111, 128, 222),
-                        
+                          foregroundColor: const Color.fromARGB(255, 111, 128, 222),
+                          side: const BorderSide(color: Color.fromARGB(255, 111, 128, 222)),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         ),
-                      
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      ),
                         child: const Text('Start Timer'),
+                      ),
+                    ),
+                  // Pause/Resume button
+                  if (isTimerRunning || isTimerPaused)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: OutlinedButton(
+                        onPressed: togglePauseTimer,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color.fromARGB(255, 111, 128, 222),
+                          side: const BorderSide(color: Color.fromARGB(255, 111, 128, 222)),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        ),
+                        child: Text(isTimerPaused ? 'Resume' : 'Pause'),
                       ),
                     ),
                   Padding(
@@ -501,16 +561,11 @@ class _PoseEstimationWithFaceMatchingState
                     child: OutlinedButton(
                       onPressed: _showStopConfirmationDialog,
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color.fromARGB(255, 111, 128, 222), 
-               
-                        side: const BorderSide(color:Color.fromARGB(255, 111, 128, 222),
-                        
-                        ),
-                      
+                        foregroundColor: const Color.fromARGB(255, 111, 128, 222),
+                        side: const BorderSide(color: Color.fromARGB(255, 111, 128, 222)),
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       ),
                       child: const Text('Stop'),
-
                     ),
                   ),
                 ],
@@ -521,5 +576,3 @@ class _PoseEstimationWithFaceMatchingState
     );
   }
 }
-
-

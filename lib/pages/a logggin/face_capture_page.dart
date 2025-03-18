@@ -194,8 +194,8 @@ class _FaceCapturePageState extends State<FaceCapturePage> {
   
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false, // Prevents back button
+    return PopScope(
+      canPop: false, // Prevents back button
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Face Capture"),
@@ -259,7 +259,7 @@ class _FaceCapturePageState extends State<FaceCapturePage> {
                         const SizedBox(height: 20),
                         const Text("Preparing camera...", style: TextStyle(fontSize: 16)),
                         const SizedBox(height: 10),
-                        const CircularProgressIndicator(),
+                  
                       ],
                     ),
               const SizedBox(height: 30),
@@ -275,7 +275,7 @@ class _FaceCapturePageState extends State<FaceCapturePage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Image saved to both app storage and gallery",
+                    "Image saved to app storage",
                     style: const TextStyle(fontSize: 12, color: Colors.green),
                   ),
                 ),

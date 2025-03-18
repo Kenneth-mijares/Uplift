@@ -136,8 +136,8 @@ class _RegisterPageState extends State<RegisterPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(); // Exit the registration page
+                Navigator.of(context).pop(); // Close the dialog
+                widget.showLoginPage(); // Navigate to login page using the callback
               },
               child: const Text(
                 'Decline',
